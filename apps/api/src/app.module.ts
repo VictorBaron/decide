@@ -13,19 +13,19 @@ import { HealthModule } from "./health/health.module";
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
 
-    // Rate limit global (soft MVP)
+    // Rate limit globally: 120 requests per minute per IP
     ThrottlerModule.forRootAsync({
       inject: [ConfigService],
       useFactory: () => [
         {
           ttl: 60_000,
-          limit: 120, // 120 req / minute / IP
+          limit: 120,
         },
       ],
     }),
 
-    // Sert le build Vite copié dans apps/api/public
-    // Exclut tout ce qui commence par /api (API reste prioritaire)
+    // Serves the Vite build copied in apps/api/public
+    // Excludes everything starting with /api (API remains prioritized)
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), "apps/api/public"),
       exclude: ["/api*"],
