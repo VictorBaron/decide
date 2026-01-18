@@ -16,7 +16,7 @@ import { LoginDto } from "./dto";
 import { CookieAuthGuard } from "./cookie-auth.guard";
 import { GoogleAuthGuard } from "./google-auth.guard";
 
-@Controller("api/v1/auth")
+@Controller("v1/auth")
 export class AuthController {
   constructor(
     private readonly auth: AuthService,

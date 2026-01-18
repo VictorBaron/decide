@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { ROUTES } from "../pages/routes";
+import { useAuth } from "../modules/auth/useAuth";
 
 interface Props {
   children: React.ReactNode;
@@ -13,7 +14,7 @@ export function ProtectedRoute({ children }: Props) {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={ROUTES.LOGIN} replace />;
   }
 
   return <>{children}</>;
