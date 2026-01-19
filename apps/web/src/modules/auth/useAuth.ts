@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import type { User } from "../api/auth";
-import { getMe, logout as apiLogout } from "../api/auth";
+import type { User } from "./auth";
+import { getMe, logout as apiLogout } from "./auth";
 
-export function useAuth() {
+export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -18,4 +18,4 @@ export function useAuth() {
   }, []);
 
   return { user, loading, logout };
-}
+};

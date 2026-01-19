@@ -20,5 +20,8 @@ export async function logout(): Promise<void> {
 }
 
 export function getGoogleAuthUrl(): string {
-  return "/api/v1/auth/google";
+  // For OAuth redirects, we need the full backend URL since window.location.href
+  // bypasses the Vite proxy (which only works for fetch/XHR requests)
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  return `${apiUrl}/api/v1/auth/google`;
 }

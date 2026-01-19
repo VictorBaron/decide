@@ -25,21 +25,37 @@ export const Login = () => {
   return (
     <div style={{ textAlign: "center", marginTop: "100px" }}>
       <h1>Welcome to Decide</h1>
-      <p>Please sign in to continue</p>
-      <button
-        onClick={handleGoogleLogin}
-        style={{
-          padding: "12px 24px",
-          fontSize: "16px",
-          cursor: "pointer",
-          backgroundColor: "#4285f4",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-        }}
-      >
-        Sign in with Google
-      </button>
+      <p>Sign in to your account or create a new one</p>
+      <div style={{ display: "flex", gap: "16px", justifyContent: "center", marginTop: "24px" }}>
+        <button
+          onClick={handleGoogleLogin}
+          style={{
+            padding: "12px 24px",
+            fontSize: "16px",
+            cursor: "pointer",
+            backgroundColor: "#4285f4",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+          }}
+        >
+          Sign in with Google
+        </button>
+        <button
+          onClick={handleGoogleLogin}
+          style={{
+            padding: "12px 24px",
+            fontSize: "16px",
+            cursor: "pointer",
+            backgroundColor: "#34a853",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+          }}
+        >
+          Sign up with Google
+        </button>
+      </div>
     </div>
   );
 };

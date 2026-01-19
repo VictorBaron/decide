@@ -14,4 +14,44 @@ model User {
   googleId  String?  @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  createdProposals  DecisionProposal[] @relation("CreatedProposals")
+  decidingProposals DecisionProposal[] @relation("DeciderProposals")
+}
+
+enum Criticality {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model DecisionProposal {
+  id          String      @id @default(cuid())
+  title       String
+  context     String?
+  dueDate     DateTime
+  criticality Criticality
+
+  creatorId String
+  creator   User   @relation("CreatedProposals", fields: [creatorId], references: [id])
+
+  deciderId String
+  decider   User   @relation("DeciderProposals", fields: [deciderId], references: [id])
+
+  options DecisionOption[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DecisionOption {
+  id    String @id @default(cuid())
+  text  String
+  order Int    @default(0)
+
+  proposalId String
+  proposal   DecisionProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 }

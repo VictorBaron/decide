@@ -1,43 +1,29 @@
-# ---- build stage
-FROM node:20-alpine AS build
+FROM node:20-alpine
+
 WORKDIR /app
 
-# pnpm
-RUN corepack enable
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# deps
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
-COPY apps/api/package.json apps/api/package.json
-COPY apps/web/package.json apps/web/package.json
-# si packages/shared existe, copie son package.json aussi
-RUN pnpm install --frozen-lockfile
+# Copy package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/api/package.json ./apps/api/
+COPY apps/web/package.json ./apps/web/
 
-# sources
+# Install dependencies
+RUN pnpm install 
+
+# Copy source code
 COPY . .
 
-# build web then api
-RUN pnpm --filter web build
-RUN pnpm --filter api build
+# Generate Prisma client
+RUN cd apps/api && pnpm prisma generate --config prisma/prisma.config.ts
 
-# copy web build into api public
-RUN rm -rf apps/api/public && mkdir -p apps/api/public \
-  && cp -r apps/web/dist/* apps/api/public/
+# Build the API
+RUN cd apps/api && pnpm exec nest build
 
-# ---- runtime stage
-FROM node:20-alpine AS runtime
-WORKDIR /app
-ENV NODE_ENV=production
-RUN corepack enable
-
-# only what we need at runtime
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
-COPY apps/api/package.json apps/api/package.json
-RUN pnpm install --frozen-lockfile --prod --filter api...
-
-# built api + public + prisma
-COPY --from=build /app/apps/api/dist apps/api/dist
-COPY --from=build /app/apps/api/public apps/api/public
-COPY --from=build /app/apps/api/prisma apps/api/prisma
+WORKDIR /app/apps/api
 
 EXPOSE 3000
-CMD ["node", "apps/api/dist/main.js"]
+
+CMD ["node", "dist/src/main.js"]
