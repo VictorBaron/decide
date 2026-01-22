@@ -2,6 +2,8 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { ServeStaticModule } from "@nestjs/serve-static";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { CqrsModule } from "@nestjs/cqrs";
 import { join } from "path";
 
 import { PrismaModule } from "./prisma/prisma.module";
@@ -13,7 +15,16 @@ import { DecisionProposalsModule } from "./decision-proposals/decision-proposals
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-
+    CqrsModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: "postgres",
+        url: config.get<string>("DATABASE_URL"),
+        autoLoadEntities: true,
+        synchronize: config.get("NODE_ENV") !== "production",
+      }),
+    }),
     // Rate limit globally: 120 requests per minute per IP
     ThrottlerModule.forRootAsync({
       inject: [ConfigService],

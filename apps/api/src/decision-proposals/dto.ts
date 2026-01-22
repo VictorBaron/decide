@@ -6,21 +6,13 @@ import {
   IsDateString,
   IsArray,
   ValidateNested,
-  IsInt,
-  Min,
 } from "class-validator";
-import { Type } from "class-transformer";
-import { Criticality } from "@prisma/client";
+import { CriticalityLevel } from "./domain";
 
 export class CreateOptionDto {
   @IsString()
   @IsNotEmpty()
   text!: string;
-
-  @IsInt()
-  @Min(0)
-  @IsOptional()
-  order?: number;
 }
 
 export class CreateDecisionProposalDto {
@@ -35,8 +27,8 @@ export class CreateDecisionProposalDto {
   @IsDateString()
   dueDate!: string;
 
-  @IsEnum(Criticality)
-  criticality!: Criticality;
+  @IsEnum(CriticalityLevel)
+  criticality!: CriticalityLevel;
 
   @IsString()
   @IsNotEmpty()
@@ -44,42 +36,37 @@ export class CreateDecisionProposalDto {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => CreateOptionDto)
   @IsOptional()
-  options?: CreateOptionDto[];
+  options?: string[];
 }
 
-export class UpdateDecisionProposalDto {
+export class UpdateDecisionProposalContentDto {
   @IsString()
   @IsNotEmpty()
-  @IsOptional()
   title?: string;
 
   @IsString()
-  @IsOptional()
-  context?: string;
+  context: string;
+}
 
+export class UpdateDecisionProposalCriticalityDto {
+  @IsEnum(CriticalityLevel)
+  criticality: CriticalityLevel;
+}
+
+export class UpdateDecisionProposalDueDateDto {
   @IsDateString()
-  @IsOptional()
-  dueDate?: string;
+  dueDate: string;
+}
 
-  @IsEnum(Criticality)
-  @IsOptional()
-  criticality?: Criticality;
-
+export class UpdateDecisionProposalDeciderDto {
   @IsString()
   @IsNotEmpty()
-  @IsOptional()
-  deciderId?: string;
+  deciderId: string;
 }
 
 export class AddOptionDto {
   @IsString()
   @IsNotEmpty()
   text!: string;
-
-  @IsInt()
-  @Min(0)
-  @IsOptional()
-  order?: number;
 }
