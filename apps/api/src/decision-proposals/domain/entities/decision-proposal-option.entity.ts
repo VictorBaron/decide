@@ -35,6 +35,10 @@ export class DecisionProposalOption extends SoftDeletableEntity<DecisionProposal
     return new DecisionProposalOption(props);
   }
 
+  getId(): string {
+    return this.id;
+  }
+
   getText(): string {
     return this.text;
   }

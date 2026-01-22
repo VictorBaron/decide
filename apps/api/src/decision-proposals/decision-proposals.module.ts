@@ -40,5 +40,6 @@ import { DecisionProposalPersistenceModule } from "./infrastructure/persistence/
     GetProposalHandler,
     GetUserProposalsHandler,
   ],
+  exports: [DecisionProposalPersistenceModule.use("orm")],
 })
 export class DecisionProposalsModule {}

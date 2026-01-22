@@ -3,9 +3,11 @@ import { DecisionProposal, DecisionProposalRepository } from "../../domain";
 
 export class RemoveOptionCommand {
   constructor(
-    readonly proposalId: string,
-    readonly optionId: string,
-    readonly userId: string
+    readonly props: {
+      proposalId: string;
+      optionId: string;
+      userId: string;
+    }
   ) {}
 }
 
@@ -14,13 +16,14 @@ export class RemoveOptionHandler {
   constructor(private readonly repository: DecisionProposalRepository) {}
 
   async execute(command: RemoveOptionCommand): Promise<DecisionProposal> {
-    const proposal = await this.repository.findById(command.proposalId);
+    const { proposalId, optionId, userId } = command.props;
+    const proposal = await this.repository.findById(proposalId);
 
     if (!proposal) {
       throw new NotFoundException("Decision proposal not found");
     }
 
-    proposal.removeOption({ option: command.optionId });
+    proposal.removeOption({ optionId, userId });
     await this.repository.save(proposal);
 
     return proposal;

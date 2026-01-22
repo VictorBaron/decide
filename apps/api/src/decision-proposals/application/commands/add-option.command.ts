@@ -16,13 +16,17 @@ export class AddOptionHandler {
   constructor(private readonly repository: DecisionProposalRepository) {}
 
   async execute(command: AddOptionCommand): Promise<DecisionProposal> {
-    const proposal = await this.repository.findById(command.props.proposalId);
+    const { proposalId, userId, text } = command.props;
+    const proposal = await this.repository.findById(proposalId);
 
     if (!proposal) {
       throw new NotFoundException("Decision proposal not found");
     }
 
-    proposal.addOption({ option: command.props.text });
+    proposal.addOption({
+      option: text,
+      userId,
+    });
     await this.repository.save(proposal);
 
     return proposal;

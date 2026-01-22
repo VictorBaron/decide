@@ -12,6 +12,8 @@ import {
   DecisionProposalJSON,
   DecisionProposalProps,
 } from "./types";
+import { Decision } from "src/decisions/domain";
+import { ForbiddenException } from "@nestjs/common/exceptions/forbidden.exception";
 
 export class DecisionProposal extends AggregateRoot {
   private title: string;
@@ -152,9 +154,9 @@ export class DecisionProposal extends AggregateRoot {
     this.updateDecision({ userId });
   }
 
-  addOption({ option }: { option: string }): void {
+  addOption({ option, userId }: { option: string; userId: string }): void {
     const newOption = this.options.addNewOption(option);
-    this.updatedAt = new Date();
+    this.updateDecision({ userId });
     this.addDomainEvent(
       new OptionAddedEvent({
         proposalId: this.id,
@@ -163,11 +165,17 @@ export class DecisionProposal extends AggregateRoot {
     );
   }
 
-  removeOption({ option }: { option: string }): void {
-    this.options.removeOption({ option });
-    this.updatedAt = new Date();
+  removeOption({
+    optionId,
+    userId,
+  }: {
+    optionId: string;
+    userId: string;
+  }): void {
+    this.options.removeOption(optionId);
+    this.updateDecision({ userId });
     this.addDomainEvent(
-      new OptionRemovedEvent({ proposalId: this.id, optionId: option })
+      new OptionRemovedEvent({ proposalId: this.id, optionId })
     );
   }
 
@@ -181,6 +189,27 @@ export class DecisionProposal extends AggregateRoot {
 
   getId(): string {
     return this.id;
+  }
+
+  canDecide(userId: string): boolean {
+    return this.deciderId === userId;
+  }
+
+  decide({ userId, optionId }: { userId: string; optionId: string }): Decision {
+    if (!this.canDecide(userId)) {
+      throw new ForbiddenException(
+        "Only the designated decider can make a decision"
+      );
+    }
+    const optionExists = this.options.exists(optionId);
+    if (!optionExists) {
+      throw new Error("Selected option does not exist in this proposal");
+    }
+    return Decision.create({
+      proposalId: this.id,
+      selectedOptionId: optionId,
+      decidedByUserId: userId,
+    });
   }
 
   toJSON(): DecisionProposalJSON {

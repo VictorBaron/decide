@@ -29,12 +29,16 @@ export class DecisionOptionsCollection {
     return option;
   }
 
-  public removeOption({ option }: { option: string }): void {
-    const index = this.options.findIndex((o) => o.getText() === option);
+  public removeOption(optionId: string): void {
+    const index = this.options.findIndex((o) => o.getId() === optionId);
     if (index === -1) {
       throw new Error("Option not found");
     }
     this.options.splice(index, 1);
+  }
+
+  public exists(optionId: string): boolean {
+    return this.options.some((option) => option.getId() === optionId);
   }
 
   public toJSON(): DecisionProposalOptionJSON[] {

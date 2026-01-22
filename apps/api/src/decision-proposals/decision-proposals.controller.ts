@@ -191,7 +191,11 @@ export class DecisionProposalsController {
     @Param("id") id: string,
     @Param("optionId") optionId: string
   ) {
-    const command = new RemoveOptionCommand(id, optionId, req.user.sub);
+    const command = new RemoveOptionCommand({
+      proposalId: id,
+      optionId,
+      userId: req.user.sub,
+    });
     const proposal = await this.removeOptionHandler.execute(command);
     return proposal.toJSON();
   }
