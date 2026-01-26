@@ -17,6 +17,7 @@ model User {
 
   createdProposals  DecisionProposal[] @relation("CreatedProposals")
   decidingProposals DecisionProposal[] @relation("DeciderProposals")
+  decisionsMade     Decision[]         @relation("DecisionsMade")
 }
 
 enum Criticality {
@@ -39,7 +40,8 @@ model DecisionProposal {
   deciderId String
   decider   User   @relation("DeciderProposals", fields: [deciderId], references: [id])
 
-  options DecisionOption[]
+  options  DecisionOption[]
+  decision Decision?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -54,4 +56,24 @@ model DecisionOption {
   proposal   DecisionProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+
+  decision Decision?
+}
+
+model Decision {
+  id String @id @default(cuid())
+
+  proposalId String           @unique
+  proposal   DecisionProposal @relation(fields: [proposalId], references: [id])
+
+  selectedOptionId String         @unique
+  selectedOption   DecisionOption @relation(fields: [selectedOptionId], references: [id])
+
+  decidedByUserId String
+  decidedBy       User   @relation("DecisionsMade", fields: [decidedByUserId], references: [id])
+
+  rationale String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

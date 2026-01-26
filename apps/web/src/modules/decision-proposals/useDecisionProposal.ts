@@ -1,9 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
-import type {
-  DecisionProposal,
-  UpdateDecisionProposalInput,
-  AddOptionInput,
-} from "./types";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMemo, useCallback } from "react";
+import type { DecisionProposal, UpdateDecisionProposalInput, AddOptionInput } from "./types";
+import { queryKeys } from "../../lib/queryClient";
 import {
   fetchProposal,
   updateProposal as apiUpdate,
@@ -24,77 +22,104 @@ interface UseDecisionProposalReturn {
 }
 
 export function useDecisionProposal(id: string): UseDecisionProposalReturn {
-  const [proposal, setProposal] = useState<DecisionProposal | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchProposal(id);
-      setProposal(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load proposal");
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
+  const {
+    data: proposal,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: queryKeys.proposals.detail(id),
+    queryFn: () => fetchProposal(id),
+    enabled: !!id,
+  });
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  const updateMutation = useMutation({
+    mutationFn: (data: UpdateDecisionProposalInput) => apiUpdate(id, data),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(queryKeys.proposals.detail(id), updated);
+      queryClient.invalidateQueries({ queryKey: queryKeys.proposals.all });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => apiDelete(id),
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: queryKeys.proposals.detail(id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.proposals.all });
+    },
+  });
+
+  const addOptionMutation = useMutation({
+    mutationFn: (data: AddOptionInput) => apiAddOption(id, data),
+    onSuccess: (newOption) => {
+      queryClient.setQueryData<DecisionProposal | undefined>(
+        queryKeys.proposals.detail(id),
+        (old) =>
+          old
+            ? {
+                ...old,
+                options: [...old.options, newOption].sort((a, b) => a.order - b.order),
+              }
+            : undefined
+      );
+    },
+  });
+
+  const removeOptionMutation = useMutation({
+    mutationFn: (optionId: string) => apiRemoveOption(id, optionId),
+    onSuccess: (_, optionId) => {
+      queryClient.setQueryData<DecisionProposal | undefined>(
+        queryKeys.proposals.detail(id),
+        (old) =>
+          old
+            ? { ...old, options: old.options.filter((o) => o.id !== optionId) }
+            : undefined
+      );
+    },
+  });
+
+  const refresh = useCallback(async () => {
+    await refetch();
+  }, [refetch]);
 
   const updateProposal = useCallback(
     async (data: UpdateDecisionProposalInput) => {
-      const updated = await apiUpdate(id, data);
-      setProposal(updated);
+      await updateMutation.mutateAsync(data);
     },
-    [id]
+    [updateMutation]
   );
 
   const deleteProposal = useCallback(async () => {
-    await apiDelete(id);
-    setProposal(null);
-  }, [id]);
+    await deleteMutation.mutateAsync();
+  }, [deleteMutation]);
 
   const addOption = useCallback(
     async (data: AddOptionInput) => {
-      const newOption = await apiAddOption(id, data);
-      setProposal((prev) =>
-        prev
-          ? {
-              ...prev,
-              options: [...prev.options, newOption].sort(
-                (a, b) => a.order - b.order
-              ),
-            }
-          : null
-      );
+      await addOptionMutation.mutateAsync(data);
     },
-    [id]
+    [addOptionMutation]
   );
 
   const removeOption = useCallback(
     async (optionId: string) => {
-      await apiRemoveOption(id, optionId);
-      setProposal((prev) =>
-        prev
-          ? { ...prev, options: prev.options.filter((o) => o.id !== optionId) }
-          : null
-      );
+      await removeOptionMutation.mutateAsync(optionId);
     },
-    [id]
+    [removeOptionMutation]
   );
 
-  return {
-    proposal,
-    loading,
-    error,
-    updateProposal,
-    deleteProposal,
-    addOption,
-    removeOption,
-    refresh: load,
-  };
+  return useMemo(
+    () => ({
+      proposal: proposal ?? null,
+      loading,
+      error: error instanceof Error ? error.message : null,
+      updateProposal,
+      deleteProposal,
+      addOption,
+      removeOption,
+      refresh,
+    }),
+    [proposal, loading, error, updateProposal, deleteProposal, addOption, removeOption, refresh]
+  );
 }

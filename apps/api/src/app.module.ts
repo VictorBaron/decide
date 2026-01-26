@@ -11,6 +11,7 @@ import { UsersModule } from "./users/users.module";
 import { AuthModule } from "./auth/auth.module";
 import { HealthModule } from "./health/health.module";
 import { DecisionProposalsModule } from "./decision-proposals/decision-proposals.module";
+import { DecisionsModule } from "./decisions/decisions.module";
 
 @Module({
   imports: [
@@ -40,7 +41,7 @@ import { DecisionProposalsModule } from "./decision-proposals/decision-proposals
     // Excludes everything starting with /api (API remains prioritized)
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), "apps/api/public"),
-      exclude: ["/api*"],
+      exclude: ["/api/(.*)"],
     }),
 
     PrismaModule,
@@ -48,6 +49,7 @@ import { DecisionProposalsModule } from "./decision-proposals/decision-proposals
     AuthModule,
     HealthModule,
     DecisionProposalsModule,
+    DecisionsModule,
   ],
 })
 export class AppModule {}

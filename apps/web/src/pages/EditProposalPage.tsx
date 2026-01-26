@@ -1,23 +1,14 @@
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ProposalForm } from "../modules/decision-proposals/ProposalForm";
 import { useDecisionProposal } from "../modules/decision-proposals/useDecisionProposal";
-import { fetchUsers } from "../modules/decision-proposals/api";
-import type { User } from "../modules/decision-proposals/types";
+import { useUsers } from "../modules/decision-proposals/useUsers";
 import { Link } from "react-router-dom";
 import { ROUTES } from "./routes";
 
 export function EditProposalPage() {
   const { id } = useParams<{ id: string }>();
   const { proposal, loading, error, updateProposal } = useDecisionProposal(id!);
-  const [users, setUsers] = useState<User[]>([]);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-
-  useEffect(() => {
-    fetchUsers()
-      .then(setUsers)
-      .finally(() => setLoadingUsers(false));
-  }, []);
+  const { users, loading: loadingUsers } = useUsers();
 
   if (loading || loadingUsers) {
     return (

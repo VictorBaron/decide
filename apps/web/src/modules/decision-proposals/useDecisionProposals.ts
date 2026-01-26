@@ -1,9 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
-import type {
-  DecisionProposal,
-  CreateDecisionProposalInput,
-  Criticality,
-} from "./types";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMemo, useCallback } from "react";
+import type { DecisionProposal, CreateDecisionProposalInput, Criticality } from "./types";
+import { queryKeys } from "../../lib/queryClient";
 import {
   fetchProposals,
   createProposal as apiCreate,
@@ -21,40 +19,37 @@ interface UseDecisionProposalsReturn {
 }
 
 export function useDecisionProposals(): UseDecisionProposalsReturn {
-  const [proposals, setProposals] = useState<DecisionProposal[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchProposals();
-      setProposals(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load proposals");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const {
+    data: proposals = [],
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: queryKeys.proposals.all,
+    queryFn: fetchProposals,
+  });
 
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  const createProposal = useCallback(
-    async (data: CreateDecisionProposalInput) => {
-      const newProposal = await apiCreate(data);
-      setProposals((prev) => [...prev, newProposal]);
-      return newProposal;
+  const createMutation = useMutation({
+    mutationFn: apiCreate,
+    onSuccess: (newProposal) => {
+      queryClient.setQueryData<DecisionProposal[]>(
+        queryKeys.proposals.all,
+        (old) => (old ? [...old, newProposal] : [newProposal])
+      );
     },
-    []
-  );
+  });
 
-  const deleteProposal = useCallback(async (id: string) => {
-    await apiDelete(id);
-    setProposals((prev) => prev.filter((p) => p.id !== id));
-  }, []);
+  const deleteMutation = useMutation({
+    mutationFn: apiDelete,
+    onSuccess: (_, deletedId) => {
+      queryClient.setQueryData<DecisionProposal[]>(
+        queryKeys.proposals.all,
+        (old) => (old ? old.filter((p) => p.id !== deletedId) : [])
+      );
+    },
+  });
 
   const filterByCriticality = useCallback(
     (criticality: Criticality | null) => {
@@ -64,13 +59,20 @@ export function useDecisionProposals(): UseDecisionProposalsReturn {
     [proposals]
   );
 
-  return {
-    proposals,
-    loading,
-    error,
-    createProposal,
-    deleteProposal,
-    refresh: load,
-    filterByCriticality,
-  };
+  const refresh = useCallback(async () => {
+    await refetch();
+  }, [refetch]);
+
+  return useMemo(
+    () => ({
+      proposals,
+      loading,
+      error: error instanceof Error ? error.message : null,
+      createProposal: createMutation.mutateAsync,
+      deleteProposal: deleteMutation.mutateAsync,
+      refresh,
+      filterByCriticality,
+    }),
+    [proposals, loading, error, createMutation.mutateAsync, deleteMutation.mutateAsync, refresh, filterByCriticality]
+  );
 }

@@ -1,21 +1,26 @@
-import { useState, useEffect, useCallback } from "react";
-import type { User } from "./auth";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "../../lib/queryClient";
 import { getMe, logout as apiLogout } from "./auth";
 
 export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    getMe()
-      .then(setUser)
-      .finally(() => setLoading(false));
-  }, []);
+  const { data: user, isLoading: loading } = useQuery({
+    queryKey: queryKeys.auth.me,
+    queryFn: getMe,
+    retry: false,
+  });
 
-  const logout = useCallback(async () => {
-    await apiLogout();
-    setUser(null);
-  }, []);
+  const logoutMutation = useMutation({
+    mutationFn: apiLogout,
+    onSuccess: () => {
+      queryClient.setQueryData(queryKeys.auth.me, null);
+    },
+  });
 
-  return { user, loading, logout };
+  return {
+    user: user ?? null,
+    loading,
+    logout: logoutMutation.mutateAsync,
+  };
 };

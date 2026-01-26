@@ -1,19 +1,12 @@
-import { useState, useEffect } from "react";
 import { ProposalForm } from "../modules/decision-proposals/ProposalForm";
-import { createProposal, fetchUsers } from "../modules/decision-proposals/api";
-import type { User, CreateDecisionProposalInput } from "../modules/decision-proposals/types";
+import { createProposal } from "../modules/decision-proposals/api";
+import { useUsers } from "../modules/decision-proposals/useUsers";
+import type { CreateDecisionProposalInput } from "../modules/decision-proposals/types";
 import { Link } from "react-router-dom";
 import { ROUTES } from "./routes";
 
 export function NewProposalPage() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-
-  useEffect(() => {
-    fetchUsers()
-      .then(setUsers)
-      .finally(() => setLoadingUsers(false));
-  }, []);
+  const { users, loading: loadingUsers } = useUsers();
 
   if (loadingUsers) {
     return (

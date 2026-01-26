@@ -6,4 +6,5 @@ export const ROUTES = {
   PROPOSAL_NEW: "/proposals/new",
   PROPOSAL_DETAIL: "/proposals/:id",
   PROPOSAL_EDIT: "/proposals/:id/edit",
+  DECISIONS: "/decisions",
 };
