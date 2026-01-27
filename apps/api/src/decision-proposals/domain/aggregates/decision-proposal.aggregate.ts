@@ -47,10 +47,6 @@ export class DecisionProposal extends AggregateRoot {
       throw new Error("Title cannot be empty");
     }
 
-    if (props.creatorId === props.deciderId) {
-      throw new Error("Creator and decider cannot be the same person");
-    }
-
     const now = new Date();
     const proposal = new DecisionProposal({
       id: crypto.randomUUID(),

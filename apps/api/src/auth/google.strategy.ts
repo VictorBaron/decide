@@ -2,13 +2,27 @@ import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, VerifyCallback, Profile } from "passport-google-oauth20";
 import { ConfigService } from "@nestjs/config";
-import { UsersService } from "../users/users.service";
+import {
+  CreateOAuthUserHandler,
+  CreateOAuthUserCommand,
+  LinkGoogleAccountHandler,
+  LinkGoogleAccountCommand,
+} from "../users/application/commands";
+import {
+  GetUserByGoogleIdHandler,
+  GetUserByGoogleIdQuery,
+  GetUserByEmailHandler,
+  GetUserByEmailQuery,
+} from "../users/application/queries";
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
   constructor(
     private readonly config: ConfigService,
-    private readonly users: UsersService
+    private readonly getUserByGoogleIdHandler: GetUserByGoogleIdHandler,
+    private readonly getUserByEmailHandler: GetUserByEmailHandler,
+    private readonly createOAuthUserHandler: CreateOAuthUserHandler,
+    private readonly linkGoogleAccountHandler: LinkGoogleAccountHandler
   ) {
     super({
       clientID: config.get<string>("GOOGLE_CLIENT_ID")!,
@@ -31,22 +45,35 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
       return done(new Error("No email from Google"), undefined);
     }
 
-    let user = await this.users.findByGoogleId(googleId);
+    let user = await this.getUserByGoogleIdHandler.execute(
+      new GetUserByGoogleIdQuery(googleId)
+    );
 
     if (!user) {
-      user = await this.users.findByEmail(email);
+      user = await this.getUserByEmailHandler.execute(
+        new GetUserByEmailQuery(email)
+      );
 
       if (user) {
-        user = await this.users.linkGoogleAccount(user.id, googleId, displayName);
+        user = await this.linkGoogleAccountHandler.execute(
+          new LinkGoogleAccountCommand({
+            userId: user.getId(),
+            googleId,
+            name: displayName,
+          })
+        );
       } else {
-        user = await this.users.createOAuthUser({
-          email,
-          googleId,
-          name: displayName,
-        });
+        user = await this.createOAuthUserHandler.execute(
+          new CreateOAuthUserCommand({
+            email,
+            googleId,
+            name: displayName,
+          })
+        );
       }
     }
 
-    done(null, user);
+    const userJson = user.toJSON();
+    done(null, userJson);
   }
 }

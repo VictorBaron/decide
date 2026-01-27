@@ -1,36 +1,63 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { UsersService } from "../users/users.service";
 import { JwtService } from "@nestjs/jwt";
-import { User } from "@prisma/client";
 import * as argon2 from "argon2";
+import {
+  CreateUserHandler,
+  CreateUserCommand,
+} from "../users/application/commands";
+import {
+  GetUserByEmailHandler,
+  GetUserByEmailQuery,
+} from "../users/application/queries";
+import { User, UserJSON } from "../users/domain";
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly users: UsersService,
+    private readonly createUserHandler: CreateUserHandler,
+    private readonly getUserByEmailHandler: GetUserByEmailHandler,
     private readonly jwt: JwtService
   ) {}
 
   async register(email: string, password: string) {
     const hash = await argon2.hash(password);
-    const user = await this.users.createUser({ email, password: hash });
-    return { id: user.id, email: user.email };
+    const user = await this.createUserHandler.execute(
+      new CreateUserCommand({ email, password: hash })
+    );
+    return { id: user.getId(), email: user.getEmail().getValue() };
   }
 
   async login(email: string, password: string) {
-    const user = await this.users.findByEmail(email);
-    if (!user || !user.password) {
+    const user = await this.getUserByEmailHandler.execute(
+      new GetUserByEmailQuery(email)
+    );
+    if (!user || !user.getPassword()) {
       throw new UnauthorizedException("Invalid credentials");
     }
 
-    const ok = await argon2.verify(user.password, password);
+    const ok = await argon2.verify(user.getPassword()!, password);
     if (!ok) throw new UnauthorizedException("Invalid credentials");
 
     const token = await this.generateToken(user);
-    return { token, user: { id: user.id, email: user.email, name: user.name } };
+    return {
+      token,
+      user: {
+        id: user.getId(),
+        email: user.getEmail().getValue(),
+        name: user.getName(),
+      },
+    };
   }
 
   async generateToken(user: User) {
+    return this.jwt.signAsync({
+      sub: user.getId(),
+      email: user.getEmail().getValue(),
+      name: user.getName(),
+    });
+  }
+
+  async generateTokenFromJson(user: UserJSON) {
     return this.jwt.signAsync({
       sub: user.id,
       email: user.email,

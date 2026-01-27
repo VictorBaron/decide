@@ -39,10 +39,10 @@ import { DecisionsModule } from "./decisions/decisions.module";
 
     // Serves the Vite build copied in apps/api/public
     // Excludes everything starting with /api (API remains prioritized)
-    ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), "apps/api/public"),
-      exclude: ["/api/(.*)"],
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(process.cwd(), "apps/api/public"),
+    //   exclude: ["/api/(.*)"],
+    // }),
 
     PrismaModule,
     UsersModule,

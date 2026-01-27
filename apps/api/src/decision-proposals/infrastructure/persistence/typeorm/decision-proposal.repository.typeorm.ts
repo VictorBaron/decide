@@ -41,7 +41,7 @@ export class DecisionProposalRepositoryTypeOrm
 
   async findByUserId(userId: string): Promise<DecisionProposal[]> {
     const decisionProposalEntities = await this.createQueryBuilder()
-      .where("decisionProposal.creatorId = :userId", { userId })
+      .where("decisionProposal.creatorId = :userId", { userId: userId })
       .getMany();
 
     return decisionProposalEntities.map(DecisionProposalMapper.toDomain);

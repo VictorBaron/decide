@@ -1,0 +1,12 @@
+import { RepositoryPort } from "src/common/domain/repository-port";
+import { User } from "../aggregates/user.aggregate";
+
+export abstract class UserRepository extends RepositoryPort<User> {
+  abstract findById(id: string): Promise<User | null>;
+  abstract findByEmail(email: string): Promise<User | null>;
+  abstract findByGoogleId(googleId: string): Promise<User | null>;
+  abstract findAll(): Promise<User[]>;
+  abstract save(user: User): Promise<void>;
+}
+
+export const USER_REPOSITORY = Symbol("UserRepository");

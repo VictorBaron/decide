@@ -9,12 +9,12 @@ import {
 } from "@nestjs/common";
 import { Response, Request } from "express";
 import { ConfigService } from "@nestjs/config";
-import { User } from "@prisma/client";
 
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto";
 import { CookieAuthGuard } from "./cookie-auth.guard";
 import { GoogleAuthGuard } from "./google-auth.guard";
+import { UserJSON } from "../users/domain";
 
 @Controller("v1/auth")
 export class AuthController {
@@ -68,8 +68,8 @@ export class AuthController {
   @Get("google/callback")
   @UseGuards(GoogleAuthGuard)
   async googleCallback(@Req() req: Request, @Res() res: Response) {
-    const user = req.user as User;
-    const token = await this.auth.generateToken(user);
+    const userJson = req.user as UserJSON;
+    const token = await this.auth.generateTokenFromJson(userJson);
 
     res.cookie("session", token, this.cookieOptions());
 

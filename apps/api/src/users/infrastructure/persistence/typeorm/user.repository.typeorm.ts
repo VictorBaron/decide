@@ -1,0 +1,59 @@
+import { Injectable } from "@nestjs/common";
+import { EventBus } from "@nestjs/cqrs";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository as TypeOrmRepository, SelectQueryBuilder } from "typeorm";
+
+import { User, UserRepository } from "src/users/domain";
+import { Repository } from "src/common/domain";
+import { UserMapper } from "./mappers";
+import { UserTypeOrm } from "./models/user.typeorm";
+
+@Injectable()
+export class UserRepositoryTypeOrm
+  extends Repository<User, UserTypeOrm>
+  implements UserRepository
+{
+  constructor(
+    @InjectRepository(UserTypeOrm)
+    protected readonly userRepository: TypeOrmRepository<UserTypeOrm>,
+    eventBus: EventBus
+  ) {
+    super(userRepository, eventBus, UserMapper);
+  }
+
+  private createQueryBuilder(): SelectQueryBuilder<UserTypeOrm> {
+    return this.userRepository.createQueryBuilder("user");
+  }
+
+  async findById(id: string): Promise<User | null> {
+    const userEntity = await this.createQueryBuilder()
+      .where("user.id = :id", { id })
+      .getOne();
+
+    return userEntity ? UserMapper.toDomain(userEntity) : null;
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    const userEntity = await this.createQueryBuilder()
+      .where("user.email = :email", { email: email.toLowerCase() })
+      .getOne();
+
+    return userEntity ? UserMapper.toDomain(userEntity) : null;
+  }
+
+  async findByGoogleId(googleId: string): Promise<User | null> {
+    const userEntity = await this.createQueryBuilder()
+      .where("user.googleId = :googleId", { googleId })
+      .getOne();
+
+    return userEntity ? UserMapper.toDomain(userEntity) : null;
+  }
+
+  async findAll(): Promise<User[]> {
+    const userEntities = await this.createQueryBuilder()
+      .orderBy("user.name", "ASC")
+      .getMany();
+
+    return userEntities.map(UserMapper.toDomain);
+  }
+}
