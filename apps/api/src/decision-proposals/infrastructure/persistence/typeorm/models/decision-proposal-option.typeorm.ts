@@ -8,7 +8,10 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-import { PersistenceEntity } from "src/common/persistence-entity";
+import {
+  OwnProperties,
+  PersistenceEntity,
+} from "src/common/persistence-entity";
 import { DecisionProposalTypeOrm } from "./decision-proposal.typeorm";
 
 @Entity("decisionProposalOption")
@@ -37,11 +40,11 @@ export class DecisionProposalOptionTypeOrm extends PersistenceEntity {
   createdAt: Date;
 
   static build(
-    props: Partial<DecisionProposalOptionTypeOrm>
+    props: OwnProperties<DecisionProposalOptionTypeOrm>
   ): DecisionProposalOptionTypeOrm {
     return Object.assign<
       DecisionProposalOptionTypeOrm,
-      Partial<DecisionProposalOptionTypeOrm>
+      OwnProperties<DecisionProposalOptionTypeOrm>
     >(new DecisionProposalOptionTypeOrm(), props);
   }
 }

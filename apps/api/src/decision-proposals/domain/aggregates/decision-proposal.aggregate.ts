@@ -22,6 +22,7 @@ export class DecisionProposal extends AggregateRoot {
   private criticality: Criticality;
   private readonly creatorId: string;
   private deciderId: string;
+  private decided: boolean;
   private options: DecisionOptionsCollection;
   private lastModifiedBy?: string;
 
@@ -38,6 +39,7 @@ export class DecisionProposal extends AggregateRoot {
     this.criticality = props.criticality;
     this.creatorId = props.creatorId;
     this.deciderId = props.deciderId;
+    this.decided = props.decided;
     this.options = new DecisionOptionsCollection(props.options);
     this.lastModifiedBy = props.lastModifiedBy;
   }
@@ -56,6 +58,7 @@ export class DecisionProposal extends AggregateRoot {
       criticality: Criticality.create(props.criticality),
       creatorId: props.creatorId,
       deciderId: props.deciderId,
+      decided: false,
       options: props.options?.map(DecisionProposalOption.create) ?? [],
       createdAt: now,
       updatedAt: now,
@@ -82,6 +85,7 @@ export class DecisionProposal extends AggregateRoot {
       criticality: props.criticality,
       creatorId: props.creatorId,
       deciderId: props.deciderId,
+      decided: props.decided,
       options: props.options,
       createdAt: props.createdAt,
       updatedAt: props.updatedAt,
@@ -191,7 +195,7 @@ export class DecisionProposal extends AggregateRoot {
     return this.deciderId === userId;
   }
 
-  decide({ userId, optionId }: { userId: string; optionId: string }): Decision {
+  decide({ userId, optionId, rationale }: { userId: string; optionId: string; rationale: string | null }): Decision {
     if (!this.canDecide(userId)) {
       throw new ForbiddenException(
         "Only the designated decider can make a decision"
@@ -205,6 +209,7 @@ export class DecisionProposal extends AggregateRoot {
       proposalId: this.id,
       selectedOptionId: optionId,
       decidedByUserId: userId,
+      rationale,
     });
   }
 
@@ -213,7 +218,8 @@ export class DecisionProposal extends AggregateRoot {
       id: this.id,
       title: this.title,
       context: this.context,
-      dueDate: this.dueDate,
+      dueDate: this.dueDate.getDate(),
+      decided: this.decided,
       criticality: this.criticality,
       creatorId: this.creatorId,
       deciderId: this.deciderId,

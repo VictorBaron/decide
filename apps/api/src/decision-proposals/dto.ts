@@ -6,13 +6,19 @@ import {
   IsDateString,
   IsArray,
   ValidateNested,
+  IsInt,
 } from "class-validator";
+import { Type } from "class-transformer";
 import { CriticalityLevel } from "./domain";
 
 export class CreateOptionDto {
   @IsString()
   @IsNotEmpty()
   text!: string;
+
+  @IsInt()
+  @IsNotEmpty()
+  order!: number;
 }
 
 export class CreateDecisionProposalDto {
@@ -36,8 +42,9 @@ export class CreateDecisionProposalDto {
 
   @IsArray()
   @ValidateNested({ each: true })
+  @Type(() => CreateOptionDto)
   @IsOptional()
-  options?: string[];
+  options?: CreateOptionDto[];
 }
 
 export class UpdateDecisionProposalContentDto {

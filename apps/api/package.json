@@ -3,18 +3,26 @@
   "scripts": {
     "dev": "nest start --watch",
     "build": "nest build",
-    "start:prod": "node dist/src/main.js",
-    "migrate:deploy": "prisma migrate deploy"
+    "start:prod": "node dist/main.js",
+    "migration:generate": "tsx node_modules/typeorm/cli.js migration:generate -d src/data-source.ts",
+    "migration:run": "tsx node_modules/typeorm/cli.js migration:run -d src/data-source.ts",
+    "migration:revert": "tsx node_modules/typeorm/cli.js migration:revert -d src/data-source.ts"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
+    "@swc/cli": "^0.7.10",
+    "@swc/core": "^1.15.10",
     "@types/cookie-parser": "^1.4.10",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.0.6",
     "@types/passport-google-oauth20": "^2.0.17",
     "@types/pg": "^8.16.0",
     "jest": "^30.2.0",
-    "prettier": "^3.8.0"
+    "nodemon": "^3.1.11",
+    "prettier": "^3.8.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.21.0"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.11",
@@ -27,8 +35,6 @@
     "@nestjs/serve-static": "^5.0.4",
     "@nestjs/throttler": "^6.5.0",
     "@nestjs/typeorm": "^11.0.0",
-    "@prisma/adapter-pg": "^7.2.0",
-    "@prisma/client": "^7.2.0",
     "@types/express": "^5.0.6",
     "argon2": "^0.44.0",
     "class-transformer": "^0.5.1",
@@ -40,7 +46,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.16.3",
-    "prisma": "^7.2.0",
+    "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.28"
   }
 }

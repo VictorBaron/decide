@@ -69,6 +69,7 @@ export class DecisionProposalsController {
     @Req() req: AuthRequest,
     @Body() dto: CreateDecisionProposalDto
   ) {
+    const options = dto.options?.map((option) => option.text) || [];
     const command = new CreateProposalCommand({
       creatorId: req.user.sub,
       title: dto.title,
@@ -76,7 +77,7 @@ export class DecisionProposalsController {
       dueDate: dto.dueDate,
       criticality: dto.criticality,
       deciderId: dto.deciderId,
-      options: dto.options ?? [],
+      options,
     });
 
     const proposal = await this.createProposalHandler.execute(command);

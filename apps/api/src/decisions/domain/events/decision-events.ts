@@ -1,27 +1,12 @@
 import { DomainEvent } from "src/common/domain";
+import { Decision } from "../aggregates";
 
 export class DecisionMadeEvent extends DomainEvent {
   readonly eventName = "decision.made";
-  readonly decisionId: string;
-  readonly proposalId: string;
-  readonly selectedOptionId: string;
-  readonly decidedByUserId: string;
+  readonly decision: Decision;
 
-  constructor({
-    decisionId,
-    proposalId,
-    selectedOptionId,
-    decidedByUserId,
-  }: {
-    decisionId: string;
-    proposalId: string;
-    selectedOptionId: string;
-    decidedByUserId: string;
-  }) {
+  constructor({ decision }: { decision: Decision }) {
     super();
-    this.decisionId = decisionId;
-    this.proposalId = proposalId;
-    this.selectedOptionId = selectedOptionId;
-    this.decidedByUserId = decidedByUserId;
+    this.decision = decision;
   }
 }

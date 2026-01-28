@@ -37,6 +37,11 @@ export class DecisionOptionsCollection {
     this.options.splice(index, 1);
   }
 
+  public findById(optionId: string): DecisionProposalOption | null {
+    const option = this.options.find((o) => o.getId() === optionId);
+    return option || null;
+  }
+
   public exists(optionId: string): boolean {
     return this.options.some((option) => option.getId() === optionId);
   }

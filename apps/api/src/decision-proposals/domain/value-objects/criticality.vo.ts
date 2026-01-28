@@ -5,6 +5,8 @@ export enum CriticalityLevel {
   CRITICAL = "CRITICAL",
 }
 
+export type CriticalityLevelStr = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+
 export class Criticality {
   constructor(private readonly value: CriticalityLevel) {
     if (!Object.values(CriticalityLevel).includes(value as CriticalityLevel)) {

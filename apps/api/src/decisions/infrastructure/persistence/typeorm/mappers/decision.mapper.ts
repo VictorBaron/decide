@@ -24,6 +24,8 @@ export class DecisionMapper {
       selectedOptionId: json.selectedOptionId,
       decidedByUserId: json.decidedByUserId,
       rationale: json.rationale,
+      createdAt: json.createdAt,
+      updatedAt: json.updatedAt,
     });
   }
 

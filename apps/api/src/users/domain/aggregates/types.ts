@@ -31,3 +31,9 @@ export interface UserJSON {
   updatedAt: Date;
   deletedAt: Date | null;
 }
+
+export interface UserLightJSON {
+  id: string;
+  email: string;
+  name: string | null;
+}

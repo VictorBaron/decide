@@ -46,14 +46,7 @@ export class Decision extends AggregateRoot {
       deletedAt: null,
     });
 
-    decision.addDomainEvent(
-      new DecisionMadeEvent({
-        decisionId: decision.id,
-        proposalId: props.proposalId,
-        selectedOptionId: props.selectedOptionId,
-        decidedByUserId: props.decidedByUserId,
-      })
-    );
+    decision.addDomainEvent(new DecisionMadeEvent({ decision }));
 
     return decision;
   }
@@ -69,26 +62,6 @@ export class Decision extends AggregateRoot {
       updatedAt: props.updatedAt,
       deletedAt: props.deletedAt,
     });
-  }
-
-  getProposalId(): string {
-    return this.proposalId;
-  }
-
-  getSelectedOptionId(): string {
-    return this.selectedOptionId;
-  }
-
-  getDecidedByUserId(): string {
-    return this.decidedByUserId;
-  }
-
-  getRationale(): string | null {
-    return this.rationale;
-  }
-
-  canBeAccessedBy(userId: string): boolean {
-    return this.decidedByUserId === userId;
   }
 
   toJSON(): DecisionJSON {

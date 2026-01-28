@@ -24,9 +24,9 @@ export class DecisionProposalRepositoryTypeOrm
   }
 
   private createQueryBuilder(): SelectQueryBuilder<DecisionProposalTypeOrm> {
-    return this.decisionProposalRepository.createQueryBuilder(
-      "decisionProposal"
-    );
+    return this.decisionProposalRepository
+      .createQueryBuilder("decisionProposal")
+      .leftJoinAndSelect("decisionProposal.options", "options");
   }
 
   async findById(id: string): Promise<DecisionProposal | null> {

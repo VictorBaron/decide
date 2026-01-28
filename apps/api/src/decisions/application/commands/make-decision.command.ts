@@ -43,11 +43,10 @@ export class MakeDecisionHandler {
       );
     }
 
-    const decision = Decision.create({
-      proposalId: command.props.proposalId,
-      selectedOptionId: command.props.selectedOptionId,
-      decidedByUserId: command.props.userId,
-      rationale: command.props.rationale,
+    const decision = proposal.decide({
+      optionId: command.props.selectedOptionId,
+      userId: command.props.userId,
+      rationale: command.props.rationale ?? null,
     });
 
     await this.decisionRepository.save(decision);

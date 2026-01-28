@@ -5,7 +5,12 @@ import {
   UserUpdatedEvent,
   GoogleAccountLinkedEvent,
 } from "../events";
-import { CreateUserProps, CreateOAuthUserProps, UserProps, UserJSON } from "./types";
+import {
+  CreateUserProps,
+  CreateOAuthUserProps,
+  UserProps,
+  UserJSON,
+} from "./types";
 
 export class User extends AggregateRoot {
   private email: Email;
@@ -103,26 +108,6 @@ export class User extends AggregateRoot {
     );
   }
 
-  getId(): string {
-    return this.id;
-  }
-
-  getEmail(): Email {
-    return this.email;
-  }
-
-  getName(): string | null {
-    return this.name;
-  }
-
-  getPassword(): string | null {
-    return this.password;
-  }
-
-  getGoogleId(): string | null {
-    return this.googleId;
-  }
-
   hasGoogleAccount(): boolean {
     return this.googleId !== null;
   }
@@ -137,6 +122,14 @@ export class User extends AggregateRoot {
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
       deletedAt: this.deletedAt,
+    };
+  }
+
+  toLightJSON(): { id: string; email: string; name: string | null } {
+    return {
+      id: this.id,
+      email: this.email.getValue(),
+      name: this.name,
     };
   }
 }
