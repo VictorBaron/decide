@@ -5,8 +5,10 @@ import {
   DueDate,
 } from "src/decision-proposals/domain";
 import { DecisionProposalJSON } from "src/decision-proposals/domain/aggregates/types";
+import { DecisionProposalResponseDTO } from "src/decision-proposals/dto";
 import { DecisionProposalTypeOrm } from "../models/decision-proposal.typeorm";
 import { DecisionProposalOptionTypeOrm } from "../models/decision-proposal-option.typeorm";
+import { UserSummaryDTO } from "src/common/dto";
 
 export class DecisionProposalMapper {
   static toDomain(raw: DecisionProposalTypeOrm): DecisionProposal {
@@ -65,7 +67,32 @@ export class DecisionProposalMapper {
     });
   }
 
-  static toResponse(proposal: DecisionProposal): DecisionProposalJSON {
-    return proposal.toJSON();
+  static toResponse(
+    proposal: DecisionProposal,
+    users: Map<string, UserSummaryDTO>
+  ): DecisionProposalResponseDTO {
+    const json = proposal.toJSON();
+    const creator = users.get(json.creatorId);
+    const decider = users.get(json.deciderId);
+
+    if (!creator || !decider) {
+      throw new Error("User not found for proposal response mapping");
+    }
+
+    return {
+      id: json.id,
+      title: json.title,
+      context: json.context,
+      dueDate: json.dueDate,
+      criticality: json.criticality.getValue(),
+      creator,
+      decider,
+      decided: json.decided,
+      options: json.options,
+      lastModifiedBy: json.lastModifiedBy,
+      createdAt: json.createdAt,
+      updatedAt: json.updatedAt,
+      deletedAt: json.deletedAt,
+    };
   }
 }

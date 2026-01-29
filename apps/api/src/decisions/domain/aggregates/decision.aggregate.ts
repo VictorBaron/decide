@@ -64,6 +64,10 @@ export class Decision extends AggregateRoot {
     });
   }
 
+  getProposalId(): string {
+    return this.proposalId;
+  }
+
   toJSON(): DecisionJSON {
     return {
       id: this.id,

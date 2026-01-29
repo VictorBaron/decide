@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 
 import { DecisionProposalsController } from "./decision-proposals.controller";
 import { AuthModule } from "../auth/auth.module";
+import { UsersModule } from "../users/users.module";
 
 // Application layer - Commands
 import {
@@ -24,7 +25,7 @@ import {
 import { DecisionProposalPersistenceModule } from "./infrastructure/persistence/decision-proposal-persistence.module";
 
 @Module({
-  imports: [AuthModule, DecisionProposalPersistenceModule.use("orm")],
+  imports: [AuthModule, UsersModule, DecisionProposalPersistenceModule.use("orm")],
   controllers: [DecisionProposalsController],
   providers: [
     // Commands

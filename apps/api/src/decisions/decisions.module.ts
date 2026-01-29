@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 
 import { DecisionsController } from "./decisions.controller";
 import { AuthModule } from "../auth/auth.module";
+import { UsersModule } from "../users/users.module";
 
 import {
   MakeDecisionHandler,
@@ -19,6 +20,7 @@ import { DecisionProposalsModule } from "../decision-proposals/decision-proposal
 @Module({
   imports: [
     AuthModule,
+    UsersModule,
     DecisionPersistenceModule.use("orm"),
     DecisionProposalsModule,
   ],

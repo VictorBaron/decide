@@ -112,6 +112,26 @@ export class User extends AggregateRoot {
     return this.googleId !== null;
   }
 
+  getId(): string {
+    return this.id;
+  }
+
+  getEmail(): Email {
+    return this.email;
+  }
+
+  getName(): string | null {
+    return this.name;
+  }
+
+  getPassword(): string | null {
+    return this.password;
+  }
+
+  getGoogleId(): string | null {
+    return this.googleId;
+  }
+
   toJSON(): UserJSON {
     return {
       id: this.id,

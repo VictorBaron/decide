@@ -33,6 +33,16 @@ export class UserRepositoryTypeOrm
     return userEntity ? UserMapper.toDomain(userEntity) : null;
   }
 
+  async findByIds(ids: string[]): Promise<User[]> {
+    if (ids.length === 0) return [];
+
+    const userEntities = await this.createQueryBuilder()
+      .where("user.id IN (:...ids)", { ids })
+      .getMany();
+
+    return userEntities.map(UserMapper.toDomain);
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     const userEntity = await this.createQueryBuilder()
       .where("user.email = :email", { email: email.toLowerCase() })

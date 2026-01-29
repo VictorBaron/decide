@@ -1,6 +1,8 @@
 import { Decision } from "src/decisions/domain";
 import { DecisionJSON } from "src/decisions/domain/aggregates/types";
+import { DecisionResponseDTO } from "src/decisions/dto";
 import { DecisionTypeOrm } from "../models/decision.typeorm";
+import { UserSummaryDTO } from "src/common/dto";
 
 export class DecisionMapper {
   static toDomain(raw: DecisionTypeOrm): Decision {
@@ -29,7 +31,26 @@ export class DecisionMapper {
     });
   }
 
-  static toResponse(decision: Decision): DecisionJSON {
-    return decision.toJSON();
+  static toResponse(
+    decision: Decision,
+    users: Map<string, UserSummaryDTO>
+  ): DecisionResponseDTO {
+    const json = decision.toJSON();
+    const decidedBy = users.get(json.decidedByUserId);
+
+    if (!decidedBy) {
+      throw new Error("User not found for decision response mapping");
+    }
+
+    return {
+      id: json.id,
+      proposalId: json.proposalId,
+      selectedOptionId: json.selectedOptionId,
+      decidedBy,
+      rationale: json.rationale,
+      createdAt: json.createdAt,
+      updatedAt: json.updatedAt,
+      deletedAt: json.deletedAt,
+    };
   }
 }

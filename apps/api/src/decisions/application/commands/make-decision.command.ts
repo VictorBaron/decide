@@ -50,6 +50,7 @@ export class MakeDecisionHandler {
     });
 
     await this.decisionRepository.save(decision);
+    await this.proposalRepository.save(proposal);
 
     return decision;
   }

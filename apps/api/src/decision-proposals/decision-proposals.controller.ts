@@ -40,9 +40,13 @@ import {
   UpdateDecisionProposalDueDateDto,
   UpdateDecisionProposalDeciderDto,
   AddOptionDto,
+  DecisionProposalResponseDTO,
 } from "./dto";
 import { DecisionProposalMapper } from "./infrastructure";
+import { DecisionProposal } from "./domain";
 import { CookieAuthGuard } from "../auth/cookie-auth.guard";
+import { UserRepository } from "../users/domain";
+import { UserSummaryDTO } from "src/common/dto";
 
 interface AuthRequest extends Request {
   user: { sub: string; email: string; name?: string };
@@ -61,8 +65,41 @@ export class DecisionProposalsController {
     private readonly addOptionHandler: AddOptionHandler,
     private readonly removeOptionHandler: RemoveOptionHandler,
     private readonly getProposalHandler: GetProposalHandler,
-    private readonly getUserProposalsHandler: GetUserProposalsHandler
+    private readonly getUserProposalsHandler: GetUserProposalsHandler,
+    private readonly userRepository: UserRepository
   ) {}
+
+  private async getUsersMap(
+    proposals: DecisionProposal[]
+  ): Promise<Map<string, UserSummaryDTO>> {
+    const userIds = new Set<string>();
+    for (const proposal of proposals) {
+      const json = proposal.toJSON();
+      userIds.add(json.creatorId);
+      userIds.add(json.deciderId);
+    }
+
+    const users = await this.userRepository.findByIds([...userIds]);
+    const usersMap = new Map<string, UserSummaryDTO>();
+    for (const user of users) {
+      usersMap.set(user.id, user.toLightJSON());
+    }
+    return usersMap;
+  }
+
+  private async mapToResponse(
+    proposal: DecisionProposal
+  ): Promise<DecisionProposalResponseDTO> {
+    const usersMap = await this.getUsersMap([proposal]);
+    return DecisionProposalMapper.toResponse(proposal, usersMap);
+  }
+
+  private async mapManyToResponse(
+    proposals: DecisionProposal[]
+  ): Promise<DecisionProposalResponseDTO[]> {
+    const usersMap = await this.getUsersMap(proposals);
+    return proposals.map((p) => DecisionProposalMapper.toResponse(p, usersMap));
+  }
 
   @Post()
   async create(
@@ -81,21 +118,21 @@ export class DecisionProposalsController {
     });
 
     const proposal = await this.createProposalHandler.execute(command);
-    return DecisionProposalMapper.toResponse(proposal);
+    return this.mapToResponse(proposal);
   }
 
   @Get()
   async findAll(@Req() req: AuthRequest) {
     const query = new GetUserProposalsQuery(req.user.sub);
     const proposals = await this.getUserProposalsHandler.execute(query);
-    return proposals.map(DecisionProposalMapper.toResponse);
+    return this.mapManyToResponse(proposals);
   }
 
   @Get(":id")
   async findOne(@Req() req: AuthRequest, @Param("id") id: string) {
     const query = new GetProposalQuery(id, req.user.sub);
     const proposal = await this.getProposalHandler.execute(query);
-    return DecisionProposalMapper.toResponse(proposal);
+    return this.mapToResponse(proposal);
   }
 
   @Put(":id")
@@ -112,7 +149,7 @@ export class DecisionProposalsController {
     });
 
     const proposal = await this.updateProposalContentHandler.execute(command);
-    return DecisionProposalMapper.toResponse(proposal);
+    return this.mapToResponse(proposal);
   }
 
   @Put(":id")
@@ -129,7 +166,7 @@ export class DecisionProposalsController {
 
     const proposal =
       await this.updateProposalCriticalityHandler.execute(command);
-    return DecisionProposalMapper.toResponse(proposal);
+    return this.mapToResponse(proposal);
   }
 
   @Put(":id")
@@ -145,7 +182,7 @@ export class DecisionProposalsController {
     });
 
     const proposal = await this.updateProposalDueDateHandler.execute(command);
-    return DecisionProposalMapper.toResponse(proposal);
+    return this.mapToResponse(proposal);
   }
 
   @Put(":id")
@@ -161,7 +198,7 @@ export class DecisionProposalsController {
     });
 
     const proposal = await this.updateProposalDeciderHandler.execute(command);
-    return DecisionProposalMapper.toResponse(proposal);
+    return this.mapToResponse(proposal);
   }
 
   @Delete(":id")
@@ -183,7 +220,7 @@ export class DecisionProposalsController {
       text: dto.text,
     });
     const proposal = await this.addOptionHandler.execute(command);
-    return proposal.toJSON();
+    return this.mapToResponse(proposal);
   }
 
   @Delete(":id/options/:optionId")
@@ -198,6 +235,6 @@ export class DecisionProposalsController {
       userId: req.user.sub,
     });
     const proposal = await this.removeOptionHandler.execute(command);
-    return proposal.toJSON();
+    return this.mapToResponse(proposal);
   }
 }

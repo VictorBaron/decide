@@ -50,7 +50,7 @@ export class DecisionProposalTypeOrm extends PersistenceEntity {
   @Column({ type: "timestamptz" })
   dueDate: Date;
 
-  @Column({ type: "boolean" })
+  @Column({ type: "boolean", default: false })
   decided: boolean;
 
   @OneToMany(() => DecisionProposalOptionTypeOrm, (option) => option.proposal, {

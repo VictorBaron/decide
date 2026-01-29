@@ -3,6 +3,7 @@ import { User } from "../aggregates/user.aggregate";
 
 export abstract class UserRepository extends RepositoryPort<User> {
   abstract findById(id: string): Promise<User | null>;
+  abstract findByIds(ids: string[]): Promise<User[]>;
   abstract findByEmail(email: string): Promise<User | null>;
   abstract findByGoogleId(googleId: string): Promise<User | null>;
   abstract findAll(): Promise<User[]>;

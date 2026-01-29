@@ -77,3 +77,30 @@ export class AddOptionDto {
   @IsNotEmpty()
   text!: string;
 }
+
+import { UserSummaryDTO } from "src/common/dto";
+import { Criticality } from "./domain";
+
+export interface DecisionProposalOptionResponseDTO {
+  id: string;
+  text: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+}
+
+export interface DecisionProposalResponseDTO {
+  id: string;
+  title: string;
+  context: string | null;
+  dueDate: Date;
+  criticality: CriticalityLevel;
+  creator: UserSummaryDTO;
+  decider: UserSummaryDTO;
+  decided: boolean;
+  options: DecisionProposalOptionResponseDTO[];
+  lastModifiedBy?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+}

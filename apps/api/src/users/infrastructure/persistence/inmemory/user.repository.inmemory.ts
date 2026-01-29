@@ -9,6 +9,12 @@ export class InMemoryUserRepository implements UserRepository {
     return this.users.get(id) ?? null;
   }
 
+  async findByIds(ids: string[]): Promise<User[]> {
+    return ids
+      .map((id) => this.users.get(id))
+      .filter((user): user is User => user !== undefined);
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     const normalizedEmail = email.toLowerCase();
     for (const user of this.users.values()) {

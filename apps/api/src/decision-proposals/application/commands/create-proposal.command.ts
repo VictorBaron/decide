@@ -23,7 +23,7 @@ export class CreateProposalHandler {
     const proposal = DecisionProposal.create({
       title: command.props.title,
       context: command.props.context,
-      dueDate: command.props.dueDate,
+      dueDate: new Date(command.props.dueDate),
       criticality: command.props.criticality,
       creatorId: command.props.creatorId,
       deciderId: command.props.deciderId,
