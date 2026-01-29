@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 import { ROUTES } from "../../pages/routes";
+import { secondaryButtonStyles } from "../../styles";
 
 export const LogoutButton = () => {
   const { logout } = useAuth();
@@ -12,18 +13,7 @@ export const LogoutButton = () => {
   };
 
   return (
-    <button
-      onClick={handleLogout}
-      style={{
-        padding: "12px 24px",
-        fontSize: "16px",
-        cursor: "pointer",
-        backgroundColor: "#dc3545",
-        color: "white",
-        border: "none",
-        borderRadius: "4px",
-      }}
-    >
+    <button onClick={handleLogout} style={secondaryButtonStyles}>
       Logout
     </button>
   );

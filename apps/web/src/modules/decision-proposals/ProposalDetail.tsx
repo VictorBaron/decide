@@ -5,6 +5,15 @@ import type { Decision } from "../decisions/types";
 import { CriticalityBadge } from "./CriticalityBadge";
 import { MakeDecisionModal } from "../decisions/MakeDecisionModal";
 import { ROUTES } from "../../pages/routes";
+import {
+  colors,
+  spacing,
+  radius,
+  inputStyles,
+  primaryButtonStyles,
+  secondaryButtonStyles,
+  dangerButtonStyles,
+} from "../../styles";
 
 interface ProposalDetailProps {
   proposal: DecisionProposal;
@@ -84,27 +93,36 @@ export function ProposalDetail({
 
   return (
     <div>
+      <div style={{ marginBottom: spacing.xl }}>
+        <Link
+          to={ROUTES.PROPOSALS}
+          style={{ color: colors.textSecondary, fontSize: 14 }}
+        >
+          Back to Proposals
+        </Link>
+      </div>
+
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-start",
-          marginBottom: "24px",
+          marginBottom: spacing.xl,
         }}
       >
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <h1 style={{ fontSize: "24px", fontWeight: 600, marginBottom: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: spacing.md, marginBottom: spacing.sm }}>
+            <h1 style={{ fontSize: 24, fontWeight: 600 }}>
               {proposal.title}
             </h1>
             {hasDecision && (
               <span
                 style={{
-                  padding: "4px 8px",
-                  backgroundColor: "#d1fae5",
-                  color: "#047857",
-                  borderRadius: "4px",
-                  fontSize: "12px",
+                  padding: "4px 10px",
+                  backgroundColor: colors.successBg,
+                  color: colors.success,
+                  borderRadius: radius.sm,
+                  fontSize: 12,
                   fontWeight: 500,
                 }}
               >
@@ -115,19 +133,13 @@ export function ProposalDetail({
           <CriticalityBadge criticality={proposal.criticality} />
         </div>
 
-        <div style={{ display: "flex", gap: "8px" }}>
+        <div style={{ display: "flex", gap: spacing.sm }}>
           {canMakeDecision && (
             <button
               onClick={() => setShowDecisionModal(true)}
               style={{
-                padding: "8px 16px",
-                backgroundColor: "#10b981",
-                color: "#fff",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-                fontSize: "14px",
-                fontWeight: 500,
+                ...primaryButtonStyles,
+                backgroundColor: colors.success,
               }}
             >
               Make Decision
@@ -137,29 +149,14 @@ export function ProposalDetail({
             <>
               <Link
                 to={ROUTES.PROPOSAL_EDIT.replace(":id", proposal.id)}
-                style={{
-                  padding: "8px 16px",
-                  backgroundColor: "#f3f4f6",
-                  color: "#374151",
-                  borderRadius: "6px",
-                  textDecoration: "none",
-                  fontSize: "14px",
-                }}
+                style={{ textDecoration: "none" }}
               >
-                Edit
+                <button style={secondaryButtonStyles}>Edit</button>
               </Link>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                style={{
-                  padding: "8px 16px",
-                  backgroundColor: "#fee2e2",
-                  color: "#dc2626",
-                  border: "none",
-                  borderRadius: "6px",
-                  cursor: deleting ? "not-allowed" : "pointer",
-                  fontSize: "14px",
-                }}
+                style={dangerButtonStyles}
               >
                 {deleting ? "Deleting..." : "Delete"}
               </button>
@@ -171,43 +168,41 @@ export function ProposalDetail({
       {hasDecision && (
         <div
           style={{
-            padding: "16px",
-            backgroundColor: "#f0fdf4",
-            border: "1px solid #bbf7d0",
-            borderRadius: "8px",
-            marginBottom: "24px",
+            padding: spacing.lg,
+            backgroundColor: colors.successLight,
+            border: `1px solid ${colors.successBorder}`,
+            borderRadius: radius.lg,
+            marginBottom: spacing.xl,
           }}
         >
           <h3
             style={{
-              fontSize: "16px",
+              fontSize: 16,
               fontWeight: 600,
-              marginBottom: "12px",
-              color: "#047857",
+              marginBottom: spacing.md,
+              color: colors.success,
             }}
           >
             Decision Made
           </h3>
-          <div style={{ marginBottom: "12px" }}>
-            <div style={{ fontSize: "13px", color: "#6b7280", marginBottom: "4px" }}>
+          <div style={{ marginBottom: spacing.md }}>
+            <div style={{ fontSize: 13, color: colors.textSecondary, marginBottom: spacing.xs }}>
               Selected Option
             </div>
-            <div style={{ fontWeight: 500, fontSize: "16px" }}>
+            <div style={{ fontWeight: 500, fontSize: 16 }}>
               {selectedOption?.text || "Unknown option"}
             </div>
           </div>
           {decision.rationale && (
-            <div style={{ marginBottom: "12px" }}>
-              <div
-                style={{ fontSize: "13px", color: "#6b7280", marginBottom: "4px" }}
-              >
+            <div style={{ marginBottom: spacing.md }}>
+              <div style={{ fontSize: 13, color: colors.textSecondary, marginBottom: spacing.xs }}>
                 Rationale
               </div>
               <div
                 style={{
-                  padding: "8px 12px",
-                  backgroundColor: "#fff",
-                  borderRadius: "6px",
+                  padding: spacing.md,
+                  backgroundColor: colors.surface,
+                  borderRadius: radius.md,
                   whiteSpace: "pre-wrap",
                 }}
               >
@@ -215,7 +210,7 @@ export function ProposalDetail({
               </div>
             </div>
           )}
-          <div style={{ fontSize: "13px", color: "#6b7280" }}>
+          <div style={{ fontSize: 13, color: colors.textSecondary }}>
             Decided on {new Date(decision.createdAt).toLocaleDateString()}
           </div>
         </div>
@@ -225,36 +220,34 @@ export function ProposalDetail({
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "16px",
-          marginBottom: "24px",
+          gap: spacing.lg,
+          marginBottom: spacing.xl,
         }}
       >
         <div>
-          <div style={{ fontSize: "13px", color: "#6b7280" }}>Due Date</div>
-          <div
-            style={{ fontWeight: 500, color: isOverdue ? "#dc2626" : "#1f2937" }}
-          >
+          <div style={{ fontSize: 13, color: colors.textSecondary }}>Due Date</div>
+          <div style={{ fontWeight: 500, color: isOverdue ? colors.error : colors.textPrimary }}>
             {dueDate.toLocaleDateString()}
             {isOverdue && " (Overdue)"}
           </div>
         </div>
 
         <div>
-          <div style={{ fontSize: "13px", color: "#6b7280" }}>Decider</div>
+          <div style={{ fontSize: 13, color: colors.textSecondary }}>Decider</div>
           <div style={{ fontWeight: 500 }}>
             {proposal.decider.name || proposal.decider.email}
           </div>
         </div>
 
         <div>
-          <div style={{ fontSize: "13px", color: "#6b7280" }}>Creator</div>
+          <div style={{ fontSize: 13, color: colors.textSecondary }}>Creator</div>
           <div style={{ fontWeight: 500 }}>
             {proposal.creator.name || proposal.creator.email}
           </div>
         </div>
 
         <div>
-          <div style={{ fontSize: "13px", color: "#6b7280" }}>Created</div>
+          <div style={{ fontSize: 13, color: colors.textSecondary }}>Created</div>
           <div style={{ fontWeight: 500 }}>
             {new Date(proposal.createdAt).toLocaleDateString()}
           </div>
@@ -262,15 +255,15 @@ export function ProposalDetail({
       </div>
 
       {proposal.context && (
-        <div style={{ marginBottom: "24px" }}>
-          <h3 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "8px" }}>
+        <div style={{ marginBottom: spacing.xl }}>
+          <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: spacing.sm }}>
             Context
           </h3>
           <div
             style={{
-              padding: "16px",
-              backgroundColor: "#f9fafb",
-              borderRadius: "8px",
+              padding: spacing.lg,
+              backgroundColor: colors.secondary,
+              borderRadius: radius.lg,
               whiteSpace: "pre-wrap",
             }}
           >
@@ -280,45 +273,41 @@ export function ProposalDetail({
       )}
 
       <div>
-        <h3 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "12px" }}>
+        <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: spacing.md }}>
           Options ({proposal.options.length})
         </h3>
 
         {proposal.options.length === 0 ? (
-          <div style={{ color: "#6b7280", fontStyle: "italic" }}>
+          <div style={{ color: colors.textSecondary, fontStyle: "italic" }}>
             No options added yet.
           </div>
         ) : (
-          <ul style={{ margin: 0, paddingLeft: "20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: spacing.sm }}>
             {proposal.options.map((option) => (
-              <li
+              <div
                 key={option.id}
                 style={{
-                  padding: "8px 0",
+                  padding: spacing.md,
+                  backgroundColor:
+                    hasDecision && option.id === decision.selectedOptionId
+                      ? colors.successLight
+                      : colors.secondary,
+                  borderRadius: radius.md,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  backgroundColor:
-                    hasDecision && option.id === decision.selectedOptionId
-                      ? "#f0fdf4"
-                      : "transparent",
-                  marginLeft: "-8px",
-                  paddingLeft: "8px",
-                  borderRadius: "4px",
                 }}
               >
                 <span
                   style={{
                     fontWeight:
-                      hasDecision && option.id === decision.selectedOptionId
-                        ? 600
-                        : 400,
+                      hasDecision && option.id === decision.selectedOptionId ? 600 : 400,
                   }}
                 >
                   {option.text}
                   {hasDecision && option.id === decision.selectedOptionId && (
-                    <span style={{ color: "#047857", marginLeft: "8px" }}>
-                      ✓ Selected
+                    <span style={{ color: colors.success, marginLeft: spacing.sm }}>
+                      Selected
                     </span>
                   )}
                 </span>
@@ -328,46 +317,35 @@ export function ProposalDetail({
                     style={{
                       padding: "4px 8px",
                       backgroundColor: "transparent",
-                      color: "#dc2626",
+                      color: colors.error,
                       border: "none",
                       cursor: "pointer",
-                      fontSize: "12px",
+                      fontSize: 12,
                     }}
                   >
                     Remove
                   </button>
                 )}
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
 
         {isCreator && !hasDecision && (
-          <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
+          <div style={{ display: "flex", gap: spacing.sm, marginTop: spacing.md }}>
             <input
               type="text"
               value={newOption}
               onChange={(e) => setNewOption(e.target.value)}
               placeholder="Add a new option..."
-              style={{
-                flex: 1,
-                padding: "8px 12px",
-                borderRadius: "4px",
-                border: "1px solid #d1d5db",
-              }}
+              style={{ ...inputStyles, flex: 1 }}
               onKeyDown={(e) => e.key === "Enter" && handleAddOption()}
             />
             <button
               onClick={handleAddOption}
               disabled={addingOption || !newOption.trim()}
               style={{
-                padding: "8px 16px",
-                backgroundColor: "#3b82f6",
-                color: "#fff",
-                border: "none",
-                borderRadius: "4px",
-                cursor:
-                  addingOption || !newOption.trim() ? "not-allowed" : "pointer",
+                ...primaryButtonStyles,
                 opacity: addingOption || !newOption.trim() ? 0.7 : 1,
               }}
             >
@@ -377,24 +355,16 @@ export function ProposalDetail({
         )}
       </div>
 
-      <div style={{ marginTop: "32px", display: "flex", gap: "16px" }}>
+      <div style={{ marginTop: spacing["2xl"], display: "flex", gap: spacing.lg }}>
         <Link
           to={ROUTES.PROPOSALS}
-          style={{
-            color: "#3b82f6",
-            textDecoration: "none",
-            fontSize: "14px",
-          }}
+          style={{ color: colors.primary, textDecoration: "none", fontSize: 14 }}
         >
           Back to Proposals
         </Link>
         <Link
           to={ROUTES.DECISIONS}
-          style={{
-            color: "#6b7280",
-            textDecoration: "none",
-            fontSize: "14px",
-          }}
+          style={{ color: colors.textSecondary, textDecoration: "none", fontSize: 14 }}
         >
           View Decisions Backlog
         </Link>

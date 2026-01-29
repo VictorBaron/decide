@@ -1,4 +1,5 @@
 import type { Criticality } from "./types";
+import { radius } from "../../styles";
 
 const CRITICALITY_STYLES: Record<
   Criticality,
@@ -21,9 +22,9 @@ export function CriticalityBadge({ criticality }: CriticalityBadgeProps) {
     <span
       style={{
         display: "inline-block",
-        padding: "2px 8px",
-        borderRadius: "4px",
-        fontSize: "12px",
+        padding: "4px 10px",
+        borderRadius: radius.sm,
+        fontSize: 12,
         fontWeight: 500,
         backgroundColor: style.bg,
         color: style.text,

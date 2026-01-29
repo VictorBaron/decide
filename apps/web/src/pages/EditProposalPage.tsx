@@ -1,9 +1,9 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { ProposalForm } from "../modules/decision-proposals/ProposalForm";
 import { useDecisionProposal } from "../modules/decision-proposals/useDecisionProposal";
 import { useUsers } from "../modules/decision-proposals/useUsers";
-import { Link } from "react-router-dom";
 import { ROUTES } from "./routes";
+import { containerStyles, colors, spacing, cardStyles } from "../styles";
 
 export function EditProposalPage() {
   const { id } = useParams<{ id: string }>();
@@ -12,19 +12,19 @@ export function EditProposalPage() {
 
   if (loading || loadingUsers) {
     return (
-      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "24px" }}>
-        Loading...
+      <div style={containerStyles}>
+        <div style={{ color: colors.textSecondary }}>Loading...</div>
       </div>
     );
   }
 
   if (error || !proposal) {
     return (
-      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "24px" }}>
-        <div style={{ color: "#dc2626", marginBottom: "16px" }}>
+      <div style={containerStyles}>
+        <div style={{ color: colors.error, marginBottom: spacing.lg }}>
           {error || "Proposal not found"}
         </div>
-        <Link to={ROUTES.PROPOSALS} style={{ color: "#3b82f6" }}>
+        <Link to={ROUTES.PROPOSALS} style={{ color: colors.primary }}>
           Back to Proposals
         </Link>
       </div>
@@ -32,26 +32,39 @@ export function EditProposalPage() {
   }
 
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "24px" }}>
-      <div style={{ marginBottom: "24px" }}>
+    <div style={containerStyles}>
+      <div style={{ marginBottom: spacing.xl }}>
         <Link
           to={ROUTES.PROPOSAL_DETAIL.replace(":id", id!)}
-          style={{ color: "#3b82f6", fontSize: "14px" }}
+          style={{ color: colors.textSecondary, fontSize: 14 }}
         >
           Back to Proposal
         </Link>
       </div>
 
-      <h1 style={{ fontSize: "24px", fontWeight: 600, marginBottom: "24px" }}>
-        Edit Proposal
-      </h1>
+      <div style={{ maxWidth: 700, margin: "0 auto" }}>
+        <div style={cardStyles}>
+          <h1 style={{ fontSize: 18, marginBottom: spacing.sm }}>
+            Edit Proposal
+          </h1>
+          <p
+            style={{
+              color: colors.textSecondary,
+              fontSize: 14,
+              marginBottom: spacing.xl,
+            }}
+          >
+            Update the decision proposal details
+          </p>
 
-      <ProposalForm
-        proposal={proposal}
-        users={users}
-        onSubmit={updateProposal}
-        isEditing
-      />
+          <ProposalForm
+            proposal={proposal}
+            users={users}
+            onSubmit={updateProposal}
+            isEditing
+          />
+        </div>
+      </div>
     </div>
   );
 }

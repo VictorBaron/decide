@@ -3,6 +3,13 @@ import { Link } from "react-router-dom";
 import type { DecisionProposal, Criticality } from "./types";
 import { ProposalCard } from "./ProposalCard";
 import { ROUTES } from "../../pages/routes";
+import {
+  colors,
+  spacing,
+  inputStyles,
+  primaryButtonStyles,
+  cardStyles,
+} from "../../styles";
 
 interface ProposalListProps {
   proposals: DecisionProposal[];
@@ -26,11 +33,19 @@ export function ProposalList({ proposals, loading, error }: ProposalListProps) {
     : proposals;
 
   if (loading) {
-    return <div style={{ padding: "20px" }}>Loading proposals...</div>;
+    return (
+      <div style={{ padding: spacing.xl, color: colors.textSecondary, textAlign: "center" }}>
+        Loading proposals...
+      </div>
+    );
   }
 
   if (error) {
-    return <div style={{ padding: "20px", color: "#dc2626" }}>Error: {error}</div>;
+    return (
+      <div style={{ padding: spacing.xl, color: colors.error, textAlign: "center" }}>
+        Error: {error}
+      </div>
+    );
   }
 
   return (
@@ -40,20 +55,20 @@ export function ProposalList({ proposals, loading, error }: ProposalListProps) {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "20px",
+          marginBottom: spacing.xl,
         }}
       >
-        <div>
-          <label style={{ marginRight: "8px", fontSize: "14px" }}>
-            Filter by criticality:
+        <div style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
+          <label style={{ fontSize: 14, color: colors.textSecondary }}>
+            Filter:
           </label>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value as Criticality | "")}
             style={{
-              padding: "6px 12px",
-              borderRadius: "4px",
-              border: "1px solid #d1d5db",
+              ...inputStyles,
+              width: "auto",
+              padding: "8px 12px",
             }}
           >
             {CRITICALITY_OPTIONS.map((opt) => (
@@ -64,31 +79,29 @@ export function ProposalList({ proposals, loading, error }: ProposalListProps) {
           </select>
         </div>
 
-        <Link
-          to={ROUTES.PROPOSAL_NEW}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#3b82f6",
-            color: "#fff",
-            borderRadius: "6px",
-            textDecoration: "none",
-            fontSize: "14px",
-          }}
-        >
-          New Proposal
+        <Link to={ROUTES.PROPOSAL_NEW} style={{ textDecoration: "none" }}>
+          <button style={primaryButtonStyles}>New Proposal</button>
         </Link>
       </div>
 
       {filtered.length === 0 ? (
-        <div style={{ padding: "40px", textAlign: "center", color: "#6b7280" }}>
+        <div
+          style={{
+            ...cardStyles,
+            textAlign: "center",
+            color: colors.textSecondary,
+          }}
+        >
           {proposals.length === 0
-            ? "No proposals yet. Create your first one!"
+            ? "No pending decisions. Create one above to get started!"
             : "No proposals match the selected filter."}
         </div>
       ) : (
-        filtered.map((proposal) => (
-          <ProposalCard key={proposal.id} proposal={proposal} />
-        ))
+        <div style={{ display: "flex", flexDirection: "column", gap: spacing.md }}>
+          {filtered.map((proposal) => (
+            <ProposalCard key={proposal.id} proposal={proposal} />
+          ))}
+        </div>
       )}
     </div>
   );

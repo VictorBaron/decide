@@ -1,5 +1,13 @@
 import { useState } from "react";
 import type { DecisionOption } from "../decision-proposals/types";
+import {
+  colors,
+  spacing,
+  radius,
+  inputStyles,
+  primaryButtonStyles,
+  secondaryButtonStyles,
+} from "../../styles";
 
 interface MakeDecisionModalProps {
   proposalTitle: string;
@@ -56,56 +64,56 @@ export function MakeDecisionModal({
     >
       <div
         style={{
-          backgroundColor: "#fff",
-          borderRadius: "12px",
-          padding: "24px",
+          backgroundColor: colors.surface,
+          borderRadius: radius.xl,
+          padding: spacing.xl,
           width: "100%",
-          maxWidth: "480px",
+          maxWidth: 500,
           maxHeight: "90vh",
           overflow: "auto",
         }}
       >
         <h2
           style={{
-            fontSize: "20px",
+            fontSize: 18,
             fontWeight: 600,
-            marginBottom: "8px",
+            marginBottom: spacing.sm,
           }}
         >
           Make Decision
         </h2>
-        <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "20px" }}>
+        <p style={{ color: colors.textSecondary, fontSize: 14, marginBottom: spacing.xl }}>
           {proposalTitle}
         </p>
 
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: "20px" }}>
+          <div style={{ marginBottom: spacing.xl }}>
             <label
               style={{
                 display: "block",
-                fontSize: "14px",
+                fontSize: 14,
                 fontWeight: 500,
-                marginBottom: "8px",
+                marginBottom: spacing.sm,
               }}
             >
               Select an option *
             </label>
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: spacing.sm }}>
               {options.map((option) => (
                 <label
                   key={option.id}
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    padding: "12px",
+                    padding: spacing.md,
                     border:
                       selectedOptionId === option.id
-                        ? "2px solid #3b82f6"
-                        : "1px solid #e5e7eb",
-                    borderRadius: "8px",
+                        ? `2px solid ${colors.primary}`
+                        : `1px solid ${colors.border}`,
+                    borderRadius: radius.lg,
                     cursor: "pointer",
                     backgroundColor:
-                      selectedOptionId === option.id ? "#eff6ff" : "#fff",
+                      selectedOptionId === option.id ? colors.secondary : colors.surface,
                     transition: "all 0.15s ease",
                   }}
                 >
@@ -115,7 +123,7 @@ export function MakeDecisionModal({
                     value={option.id}
                     checked={selectedOptionId === option.id}
                     onChange={(e) => setSelectedOptionId(e.target.value)}
-                    style={{ marginRight: "12px" }}
+                    style={{ marginRight: spacing.md }}
                   />
                   <span style={{ flex: 1 }}>{option.text}</span>
                 </label>
@@ -123,13 +131,13 @@ export function MakeDecisionModal({
             </div>
           </div>
 
-          <div style={{ marginBottom: "20px" }}>
+          <div style={{ marginBottom: spacing.xl }}>
             <label
               style={{
                 display: "block",
-                fontSize: "14px",
+                fontSize: 14,
                 fontWeight: 500,
-                marginBottom: "8px",
+                marginBottom: spacing.sm,
               }}
             >
               Rationale (optional)
@@ -140,13 +148,8 @@ export function MakeDecisionModal({
               placeholder="Explain why you chose this option..."
               rows={4}
               style={{
-                width: "100%",
-                padding: "12px",
-                border: "1px solid #d1d5db",
-                borderRadius: "6px",
-                fontSize: "14px",
+                ...inputStyles,
                 resize: "vertical",
-                boxSizing: "border-box",
               }}
             />
           </div>
@@ -154,33 +157,24 @@ export function MakeDecisionModal({
           {error && (
             <div
               style={{
-                padding: "12px",
-                backgroundColor: "#fef2f2",
-                color: "#dc2626",
-                borderRadius: "6px",
-                marginBottom: "16px",
-                fontSize: "14px",
+                padding: spacing.md,
+                backgroundColor: colors.errorBg,
+                color: colors.error,
+                borderRadius: radius.md,
+                marginBottom: spacing.lg,
+                fontSize: 14,
               }}
             >
               {error}
             </div>
           )}
 
-          <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+          <div style={{ display: "flex", gap: spacing.md, justifyContent: "flex-end" }}>
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              style={{
-                padding: "10px 20px",
-                backgroundColor: "#f3f4f6",
-                color: "#374151",
-                border: "none",
-                borderRadius: "6px",
-                cursor: loading ? "not-allowed" : "pointer",
-                fontSize: "14px",
-                fontWeight: 500,
-              }}
+              style={secondaryButtonStyles}
             >
               Cancel
             </button>
@@ -188,14 +182,7 @@ export function MakeDecisionModal({
               type="submit"
               disabled={loading || !selectedOptionId}
               style={{
-                padding: "10px 20px",
-                backgroundColor: "#3b82f6",
-                color: "#fff",
-                border: "none",
-                borderRadius: "6px",
-                cursor: loading || !selectedOptionId ? "not-allowed" : "pointer",
-                fontSize: "14px",
-                fontWeight: 500,
+                ...primaryButtonStyles,
                 opacity: loading || !selectedOptionId ? 0.7 : 1,
               }}
             >

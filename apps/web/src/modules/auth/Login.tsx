@@ -3,6 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 import { getGoogleAuthUrl } from "./auth";
 import { ROUTES } from "../../pages/routes";
+import {
+  containerStyles,
+  colors,
+  spacing,
+  primaryButtonStyles,
+} from "../../styles";
 
 export const Login = () => {
   const { user, loading } = useAuth();
@@ -19,41 +25,46 @@ export const Login = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div
+        style={{
+          ...containerStyles,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <div style={{ color: colors.textSecondary }}>Loading...</div>
+      </div>
+    );
   }
 
   return (
-    <div style={{ textAlign: "center", marginTop: "100px" }}>
-      <h1>Welcome to Decide</h1>
-      <p>Sign in to your account or create a new one</p>
-      <div style={{ display: "flex", gap: "16px", justifyContent: "center", marginTop: "24px" }}>
+    <div
+      style={{
+        ...containerStyles,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+      }}
+    >
+      <div style={{ textAlign: "center", maxWidth: 400 }}>
+        <h1 style={{ fontSize: 32, marginBottom: spacing.sm }}>Decide</h1>
+        <p style={{ color: colors.textSecondary, marginBottom: spacing["2xl"] }}>
+          Materialize and track decisions across your organization
+        </p>
         <button
           onClick={handleGoogleLogin}
           style={{
-            padding: "12px 24px",
-            fontSize: "16px",
-            cursor: "pointer",
-            backgroundColor: "#4285f4",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
+            ...primaryButtonStyles,
+            width: "100%",
+            padding: "14px 24px",
+            fontSize: 15,
           }}
         >
           Sign in with Google
-        </button>
-        <button
-          onClick={handleGoogleLogin}
-          style={{
-            padding: "12px 24px",
-            fontSize: "16px",
-            cursor: "pointer",
-            backgroundColor: "#34a853",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-          }}
-        >
-          Sign up with Google
         </button>
       </div>
     </div>

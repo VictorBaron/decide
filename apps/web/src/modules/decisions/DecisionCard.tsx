@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import type { Decision } from "./types";
 import type { DecisionProposal } from "../decision-proposals/types";
 import { ROUTES } from "../../pages/routes";
+import { colors, spacing, radius } from "../../styles";
 
 interface DecisionCardProps {
   decision: Decision;
@@ -17,11 +18,10 @@ export function DecisionCard({ decision, proposal }: DecisionCardProps) {
   return (
     <div
       style={{
-        padding: "16px",
-        backgroundColor: "#fff",
-        border: "1px solid #e5e7eb",
-        borderRadius: "8px",
-        boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+        padding: spacing.lg,
+        backgroundColor: colors.surface,
+        border: `1px solid ${colors.border}`,
+        borderRadius: radius.lg,
       }}
     >
       <div
@@ -29,32 +29,32 @@ export function DecisionCard({ decision, proposal }: DecisionCardProps) {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-start",
-          marginBottom: "12px",
+          marginBottom: spacing.md,
         }}
       >
         <div>
           <Link
             to={ROUTES.PROPOSAL_DETAIL.replace(":id", decision.proposalId)}
             style={{
-              fontSize: "16px",
+              fontSize: 16,
               fontWeight: 600,
-              color: "#1f2937",
+              color: colors.textPrimary,
               textDecoration: "none",
             }}
           >
             {proposal?.title || "Proposal"}
           </Link>
-          <div style={{ fontSize: "13px", color: "#6b7280", marginTop: "4px" }}>
+          <div style={{ fontSize: 13, color: colors.textSecondary, marginTop: spacing.xs }}>
             Decided on {createdDate.toLocaleDateString()}
           </div>
         </div>
         <div
           style={{
-            padding: "4px 8px",
-            backgroundColor: "#d1fae5",
-            color: "#047857",
-            borderRadius: "4px",
-            fontSize: "12px",
+            padding: "4px 10px",
+            backgroundColor: colors.successBg,
+            color: colors.success,
+            borderRadius: radius.sm,
+            fontSize: 12,
             fontWeight: 500,
           }}
         >
@@ -62,16 +62,16 @@ export function DecisionCard({ decision, proposal }: DecisionCardProps) {
         </div>
       </div>
 
-      <div style={{ marginBottom: "12px" }}>
-        <div style={{ fontSize: "13px", color: "#6b7280", marginBottom: "4px" }}>
+      <div style={{ marginBottom: spacing.md }}>
+        <div style={{ fontSize: 13, color: colors.textSecondary, marginBottom: spacing.xs }}>
           Selected Option
         </div>
         <div
           style={{
-            padding: "8px 12px",
-            backgroundColor: "#f0fdf4",
-            border: "1px solid #bbf7d0",
-            borderRadius: "6px",
+            padding: spacing.md,
+            backgroundColor: colors.successLight,
+            border: `1px solid ${colors.successBorder}`,
+            borderRadius: radius.md,
             fontWeight: 500,
           }}
         >
@@ -81,15 +81,15 @@ export function DecisionCard({ decision, proposal }: DecisionCardProps) {
 
       {decision.rationale && (
         <div>
-          <div style={{ fontSize: "13px", color: "#6b7280", marginBottom: "4px" }}>
+          <div style={{ fontSize: 13, color: colors.textSecondary, marginBottom: spacing.xs }}>
             Rationale
           </div>
           <div
             style={{
-              padding: "8px 12px",
-              backgroundColor: "#f9fafb",
-              borderRadius: "6px",
-              fontSize: "14px",
+              padding: spacing.md,
+              backgroundColor: colors.secondary,
+              borderRadius: radius.md,
+              fontSize: 14,
               whiteSpace: "pre-wrap",
             }}
           >

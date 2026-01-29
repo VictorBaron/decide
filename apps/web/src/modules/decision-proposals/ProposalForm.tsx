@@ -7,6 +7,14 @@ import type {
   UpdateDecisionProposalInput,
 } from "./types";
 import { ROUTES } from "../../pages/routes";
+import {
+  colors,
+  spacing,
+  radius,
+  inputStyles,
+  labelStyles,
+  primaryButtonStyles,
+} from "../../styles";
 
 interface ProposalFormProps {
   proposal?: DecisionProposal;
@@ -43,6 +51,7 @@ export function ProposalForm({
     proposal?.criticality || "MEDIUM"
   );
   const [deciderId, setDeciderId] = useState(proposal?.deciderId || "");
+  const [team, setTeam] = useState("");
   const [options, setOptions] = useState<string[]>(
     proposal?.options.map((o) => o.text) || [""]
   );
@@ -88,78 +97,56 @@ export function ProposalForm({
   const updateOption = (idx: number, value: string) =>
     setOptions(options.map((o, i) => (i === idx ? value : o)));
 
-  const inputStyle = {
-    width: "100%",
-    padding: "8px 12px",
-    borderRadius: "4px",
-    border: "1px solid #d1d5db",
-    fontSize: "14px",
-  };
-
-  const labelStyle = {
-    display: "block",
-    marginBottom: "4px",
-    fontWeight: 500,
-    fontSize: "14px",
-  };
-
   return (
     <form onSubmit={handleSubmit}>
       {error && (
         <div
           style={{
-            padding: "12px",
-            marginBottom: "16px",
-            backgroundColor: "#fef2f2",
-            color: "#dc2626",
-            borderRadius: "4px",
+            padding: spacing.md,
+            marginBottom: spacing.lg,
+            backgroundColor: colors.errorBg,
+            color: colors.error,
+            borderRadius: radius.md,
+            fontSize: 14,
           }}
         >
           {error}
         </div>
       )}
 
-      <div style={{ marginBottom: "16px" }}>
-        <label style={labelStyle}>Title *</label>
+      <div style={{ marginBottom: spacing.lg }}>
+        <label style={labelStyles}>Title *</label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          style={inputStyle}
-          placeholder="What decision needs to be made?"
+          style={inputStyles}
+          placeholder="e.g., Choose new design system"
         />
       </div>
 
-      <div style={{ marginBottom: "16px" }}>
-        <label style={labelStyle}>Context</label>
+      <div style={{ marginBottom: spacing.lg }}>
+        <label style={labelStyles}>Context *</label>
         <textarea
           value={context}
           onChange={(e) => setContext(e.target.value)}
-          style={{ ...inputStyle, minHeight: "100px", resize: "vertical" }}
-          placeholder="Background information to help with the decision..."
+          style={{
+            ...inputStyles,
+            minHeight: 100,
+            resize: "vertical",
+          }}
+          placeholder="Provide background and context for this decision..."
         />
       </div>
 
-      <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
-        <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Due Date *</label>
-          <input
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            required
-            min={new Date().toISOString().split("T")[0]}
-            style={inputStyle}
-          />
-        </div>
-
-        <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Criticality *</label>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: spacing.lg, marginBottom: spacing.lg }}>
+        <div>
+          <label style={labelStyles}>Criticality *</label>
           <select
             value={criticality}
             onChange={(e) => setCriticality(e.target.value as Criticality)}
-            style={inputStyle}
+            style={inputStyles}
           >
             {CRITICALITY_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -168,110 +155,127 @@ export function ProposalForm({
             ))}
           </select>
         </div>
+
+        <div>
+          <label style={labelStyles}>Due Date *</label>
+          <input
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            required
+            min={new Date().toISOString().split("T")[0]}
+            style={inputStyles}
+          />
+        </div>
       </div>
 
-      <div style={{ marginBottom: "16px" }}>
-        <label style={labelStyle}>Decider *</label>
-        <select
-          value={deciderId}
-          onChange={(e) => setDeciderId(e.target.value)}
-          required
-          style={inputStyle}
-        >
-          <option value="">Select a decider...</option>
-          {users.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.name || user.email}
-            </option>
-          ))}
-        </select>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: spacing.lg, marginBottom: spacing.lg }}>
+        <div>
+          <label style={labelStyles}>Decider *</label>
+          <select
+            value={deciderId}
+            onChange={(e) => setDeciderId(e.target.value)}
+            required
+            style={inputStyles}
+          >
+            <option value="">Person who will make final decision</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name || user.email}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label style={labelStyles}>Team *</label>
+          <input
+            type="text"
+            value={team}
+            onChange={(e) => setTeam(e.target.value)}
+            style={inputStyles}
+            placeholder="e.g., Engineering, Design, Product"
+          />
+        </div>
       </div>
 
       {!isEditing && (
-        <div style={{ marginBottom: "16px" }}>
-          <label style={labelStyle}>Options</label>
+        <div style={{ marginBottom: spacing.lg }}>
+          <label style={labelStyles}>Options to Choose From</label>
           {options.map((opt, idx) => (
             <div
               key={idx}
-              style={{ display: "flex", gap: "8px", marginBottom: "8px" }}
+              style={{ display: "flex", gap: spacing.sm, marginBottom: spacing.sm }}
             >
               <input
                 type="text"
                 value={opt}
                 onChange={(e) => updateOption(idx, e.target.value)}
-                style={{ ...inputStyle, flex: 1 }}
-                placeholder={`Option ${idx + 1}`}
+                style={{ ...inputStyles, flex: 1 }}
+                placeholder="Add an option..."
               />
               {options.length > 1 && (
                 <button
                   type="button"
                   onClick={() => removeOption(idx)}
                   style={{
-                    padding: "8px 12px",
-                    backgroundColor: "#fee2e2",
-                    color: "#dc2626",
+                    width: 40,
+                    height: 40,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: colors.secondary,
+                    color: colors.textSecondary,
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: radius.md,
                     cursor: "pointer",
+                    fontSize: 18,
                   }}
                 >
-                  Remove
+                  -
+                </button>
+              )}
+              {idx === options.length - 1 && (
+                <button
+                  type="button"
+                  onClick={addOption}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: colors.secondary,
+                    color: colors.textPrimary,
+                    border: "none",
+                    borderRadius: radius.md,
+                    cursor: "pointer",
+                    fontSize: 18,
+                  }}
+                >
+                  +
                 </button>
               )}
             </div>
           ))}
-          <button
-            type="button"
-            onClick={addOption}
-            style={{
-              padding: "6px 12px",
-              backgroundColor: "#f3f4f6",
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "13px",
-            }}
-          >
-            + Add Option
-          </button>
         </div>
       )}
 
-      <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
-        <button
-          type="submit"
-          disabled={submitting}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#3b82f6",
-            color: "#fff",
-            border: "none",
-            borderRadius: "6px",
-            cursor: submitting ? "not-allowed" : "pointer",
-            opacity: submitting ? 0.7 : 1,
-          }}
-        >
-          {submitting
-            ? "Saving..."
-            : isEditing
-              ? "Update Proposal"
-              : "Create Proposal"}
-        </button>
-        <button
-          type="button"
-          onClick={() => navigate(ROUTES.PROPOSALS)}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#f3f4f6",
-            color: "#374151",
-            border: "1px solid #d1d5db",
-            borderRadius: "6px",
-            cursor: "pointer",
-          }}
-        >
-          Cancel
-        </button>
-      </div>
+      <button
+        type="submit"
+        disabled={submitting}
+        style={{
+          ...primaryButtonStyles,
+          width: "100%",
+          opacity: submitting ? 0.7 : 1,
+        }}
+      >
+        {submitting
+          ? "Saving..."
+          : isEditing
+            ? "Update Proposal"
+            : "Create Decision Proposal"}
+      </button>
     </form>
   );
 }

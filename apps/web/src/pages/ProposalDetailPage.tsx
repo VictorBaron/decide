@@ -1,10 +1,10 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { ProposalDetail } from "../modules/decision-proposals/ProposalDetail";
 import { useDecisionProposal } from "../modules/decision-proposals/useDecisionProposal";
 import { useDecisionByProposal, useMakeDecision } from "../modules/decisions";
 import { useAuth } from "../modules/auth/useAuth";
-import { Link } from "react-router-dom";
 import { ROUTES } from "./routes";
+import { containerStyles, colors, spacing } from "../styles";
 
 export function ProposalDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -37,19 +37,19 @@ export function ProposalDetailPage() {
 
   if (loading) {
     return (
-      <div style={{ maxWidth: "800px", margin: "0 auto", padding: "24px" }}>
-        Loading...
+      <div style={containerStyles}>
+        <div style={{ color: colors.textSecondary }}>Loading...</div>
       </div>
     );
   }
 
   if (error || !proposal) {
     return (
-      <div style={{ maxWidth: "800px", margin: "0 auto", padding: "24px" }}>
-        <div style={{ color: "#dc2626", marginBottom: "16px" }}>
+      <div style={containerStyles}>
+        <div style={{ color: colors.error, marginBottom: spacing.lg }}>
           {error || "Proposal not found"}
         </div>
-        <Link to={ROUTES.PROPOSALS} style={{ color: "#3b82f6" }}>
+        <Link to={ROUTES.PROPOSALS} style={{ color: colors.primary }}>
           Back to Proposals
         </Link>
       </div>
@@ -57,7 +57,7 @@ export function ProposalDetailPage() {
   }
 
   return (
-    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "24px" }}>
+    <div style={containerStyles}>
       <ProposalDetail
         proposal={proposal}
         currentUserId={user?.id || ""}
