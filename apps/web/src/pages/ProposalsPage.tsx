@@ -1,63 +1,41 @@
 import { Link } from "react-router-dom";
-import { ProposalList } from "../modules/decision-proposals/ProposalList";
-import { useDecisionProposals } from "../modules/decision-proposals/useDecisionProposals";
-import { LogoutButton } from "../modules/auth/LogoutButton";
-import { useAuth } from "../modules/auth/useAuth";
+import { ProposalListWidget } from "../modules/decision-proposals";
+import { LogoutButtonWidget, useAuth } from "../modules/auth";
 import { ROUTES } from "./routes";
-import {
-  containerStyles,
-  pageHeaderStyles,
-  colors,
-  spacing,
-  tabContainerStyles,
-  tabStyles,
-} from "../styles";
+import * as styles from "./ProposalsPage.css";
 
 export function ProposalsPage() {
-  const { proposals, loading, error } = useDecisionProposals();
   const { user } = useAuth();
 
   return (
-    <div style={containerStyles}>
-      <div style={pageHeaderStyles}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-          }}
-        >
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.headerContent}>
           <div>
-            <h1 style={{ fontSize: 28, marginBottom: spacing.sm }}>
-              Decision Tracker
-            </h1>
-            <p style={{ color: colors.textSecondary, fontSize: 15 }}>
+            <h1 className={styles.title}>Decision Tracker</h1>
+            <p className={styles.subtitle}>
               Materialize and track decisions across your organization
             </p>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: spacing.md }}>
-            <span style={{ color: colors.textSecondary, fontSize: 14 }}>
-              {user?.name || user?.email}
-            </span>
-            <LogoutButton />
+          <div className={styles.userSection}>
+            <span className={styles.userName}>{user?.name || user?.email}</span>
+            <LogoutButtonWidget />
           </div>
         </div>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: spacing.xl }}>
-        <div style={tabContainerStyles}>
-          <div style={tabStyles(true)}>
-            <span>Proposals ({proposals.length})</span>
+      <div className={styles.tabsWrapper}>
+        <div className={styles.tabContainer}>
+          <div className={styles.tabActive}>
+            <span>Proposals</span>
           </div>
-          <Link to={ROUTES.DECISIONS} style={{ textDecoration: "none" }}>
-            <div style={tabStyles(false)}>
-              <span>Backlog</span>
-            </div>
+          <Link to={ROUTES.DECISIONS} className={styles.tab}>
+            <span>Backlog</span>
           </Link>
         </div>
       </div>
 
-      <ProposalList proposals={proposals} loading={loading} error={error} />
+      <ProposalListWidget />
     </div>
   );
 }

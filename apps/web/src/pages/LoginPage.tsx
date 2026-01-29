@@ -1,5 +1,5 @@
-import { Login } from "../modules/auth/Login";
+import { LoginWidget } from "../modules/auth";
 
 export function LoginPage() {
-  return <Login />;
+  return <LoginWidget />;
 }

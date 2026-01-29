@@ -1,30 +1,25 @@
 import { useParams, Link } from "react-router-dom";
-import { ProposalForm } from "../modules/decision-proposals/ProposalForm";
-import { useDecisionProposal } from "../modules/decision-proposals/useDecisionProposal";
-import { useUsers } from "../modules/decision-proposals/useUsers";
+import { ProposalFormWidget, useDecisionProposal } from "../modules/decision-proposals";
 import { ROUTES } from "./routes";
-import { containerStyles, colors, spacing, cardStyles } from "../styles";
+import * as styles from "./EditProposalPage.css";
 
 export function EditProposalPage() {
   const { id } = useParams<{ id: string }>();
   const { proposal, loading, error, updateProposal } = useDecisionProposal(id!);
-  const { users, loading: loadingUsers } = useUsers();
 
-  if (loading || loadingUsers) {
+  if (loading) {
     return (
-      <div style={containerStyles}>
-        <div style={{ color: colors.textSecondary }}>Loading...</div>
+      <div className={styles.container}>
+        <div className={styles.loadingState}>Loading...</div>
       </div>
     );
   }
 
   if (error || !proposal) {
     return (
-      <div style={containerStyles}>
-        <div style={{ color: colors.error, marginBottom: spacing.lg }}>
-          {error || "Proposal not found"}
-        </div>
-        <Link to={ROUTES.PROPOSALS} style={{ color: colors.primary }}>
+      <div className={styles.container}>
+        <div className={styles.errorState}>{error || "Proposal not found"}</div>
+        <Link to={ROUTES.PROPOSALS} className={styles.errorLink}>
           Back to Proposals
         </Link>
       </div>
@@ -32,34 +27,21 @@ export function EditProposalPage() {
   }
 
   return (
-    <div style={containerStyles}>
-      <div style={{ marginBottom: spacing.xl }}>
-        <Link
-          to={ROUTES.PROPOSAL_DETAIL.replace(":id", id!)}
-          style={{ color: colors.textSecondary, fontSize: 14 }}
-        >
-          Back to Proposal
-        </Link>
-      </div>
+    <div className={styles.container}>
+      <Link
+        to={ROUTES.PROPOSAL_DETAIL.replace(":id", id!)}
+        className={styles.backLink}
+      >
+        Back to Proposal
+      </Link>
 
-      <div style={{ maxWidth: 700, margin: "0 auto" }}>
-        <div style={cardStyles}>
-          <h1 style={{ fontSize: 18, marginBottom: spacing.sm }}>
-            Edit Proposal
-          </h1>
-          <p
-            style={{
-              color: colors.textSecondary,
-              fontSize: 14,
-              marginBottom: spacing.xl,
-            }}
-          >
-            Update the decision proposal details
-          </p>
+      <div className={styles.formWrapper}>
+        <div className={styles.card}>
+          <h1 className={styles.title}>Edit Proposal</h1>
+          <p className={styles.subtitle}>Update the decision proposal details</p>
 
-          <ProposalForm
+          <ProposalFormWidget
             proposal={proposal}
-            users={users}
             onSubmit={updateProposal}
             isEditing
           />

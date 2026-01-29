@@ -1,82 +1,45 @@
-import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { useDecisions, DecisionsList } from "../modules/decisions";
-import { useDecisionProposals } from "../modules/decision-proposals/useDecisionProposals";
-import { LogoutButton } from "../modules/auth/LogoutButton";
-import { useAuth } from "../modules/auth/useAuth";
+import { DecisionsListWidget } from "../modules/decisions";
+import { LogoutButtonWidget, useAuth } from "../modules/auth";
 import { ROUTES } from "./routes";
-import {
-  containerStyles,
-  pageHeaderStyles,
-  colors,
-  spacing,
-  tabContainerStyles,
-  tabStyles,
-} from "../styles";
+import * as styles from "./DecisionsBacklogPage.css";
 
 export function DecisionsBacklogPage() {
-  const { decisions, loading: decisionsLoading, error: decisionsError } = useDecisions();
-  const { proposals, loading: proposalsLoading, error: proposalsError } = useDecisionProposals();
   const { user } = useAuth();
 
-  const proposalsMap = useMemo(() => {
-    const map = new Map(proposals.map((p) => [p.id, p]));
-    return map;
-  }, [proposals]);
-
-  const loading = decisionsLoading || proposalsLoading;
-  const error = decisionsError || proposalsError;
-
   return (
-    <div style={containerStyles}>
-      <div style={pageHeaderStyles}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-          }}
-        >
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.headerContent}>
           <div>
-            <h1 style={{ fontSize: 28, marginBottom: spacing.sm }}>
-              Decision Tracker
-            </h1>
-            <p style={{ color: colors.textSecondary, fontSize: 15 }}>
+            <h1 className={styles.title}>Decision Tracker</h1>
+            <p className={styles.subtitle}>
               Materialize and track decisions across your organization
             </p>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: spacing.md }}>
-            <span style={{ color: colors.textSecondary, fontSize: 14 }}>
-              {user?.name || user?.email}
-            </span>
-            <LogoutButton />
+          <div className={styles.userSection}>
+            <span className={styles.userName}>{user?.name || user?.email}</span>
+            <LogoutButtonWidget />
           </div>
         </div>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: spacing.xl }}>
-        <div style={tabContainerStyles}>
-          <Link to={ROUTES.PROPOSALS} style={{ textDecoration: "none" }}>
-            <div style={tabStyles(false)}>
-              <span>Proposals</span>
-            </div>
+      <div className={styles.tabsWrapper}>
+        <div className={styles.tabContainer}>
+          <Link to={ROUTES.PROPOSALS} className={styles.tab}>
+            <span>Proposals</span>
           </Link>
-          <div style={tabStyles(true)}>
-            <span>Backlog ({decisions.length})</span>
+          <div className={styles.tabActive}>
+            <span>Backlog</span>
           </div>
         </div>
       </div>
 
-      <p style={{ color: colors.textSecondary, marginBottom: spacing.xl, textAlign: "center" }}>
+      <p className={styles.description}>
         A log of all decisions that have been made on proposals.
       </p>
 
-      <DecisionsList
-        decisions={decisions}
-        proposals={proposalsMap}
-        loading={loading}
-        error={error}
-      />
+      <DecisionsListWidget />
     </div>
   );
 }

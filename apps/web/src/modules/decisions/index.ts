@@ -1,8 +1,6 @@
-export * from "./types";
-export * from "./api";
-export * from "./useDecisions";
-export * from "./useMakeDecision";
-export * from "./useDecisionByProposal";
-export * from "./DecisionCard";
-export * from "./DecisionsList";
-export * from "./MakeDecisionModal";
+export { DecisionsListWidget } from "./widgets";
+export { DecisionCard, MakeDecisionModal } from "./components";
+export { useDecisions } from "./useDecisions";
+export { useMakeDecision } from "./useMakeDecision";
+export { useDecisionByProposal } from "./useDecisionByProposal";
+export type { Decision, DecisionWithDetails, MakeDecisionInput } from "./types";
