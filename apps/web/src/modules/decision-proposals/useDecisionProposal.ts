@@ -1,7 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useCallback } from "react";
-import type { DecisionProposal, UpdateDecisionProposalInput, AddOptionInput } from "./types";
-import { queryKeys } from "../../lib/queryClient";
+import type {
+  DecisionProposal,
+  UpdateDecisionProposalInput,
+  AddOptionInput,
+} from "./types";
+import { queryKeys } from "../../common/queryClient";
 import {
   fetchProposal,
   updateProposal as apiUpdate,
@@ -60,7 +64,9 @@ export function useDecisionProposal(id: string): UseDecisionProposalReturn {
           old
             ? {
                 ...old,
-                options: [...old.options, newOption].sort((a, b) => a.order - b.order),
+                options: [...old.options, newOption].sort(
+                  (a, b) => a.order - b.order
+                ),
               }
             : undefined
       );
@@ -120,6 +126,15 @@ export function useDecisionProposal(id: string): UseDecisionProposalReturn {
       removeOption,
       refresh,
     }),
-    [proposal, loading, error, updateProposal, deleteProposal, addOption, removeOption, refresh]
+    [
+      proposal,
+      loading,
+      error,
+      updateProposal,
+      deleteProposal,
+      addOption,
+      removeOption,
+      refresh,
+    ]
   );
 }

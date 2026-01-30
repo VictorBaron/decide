@@ -10,9 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@blocknote/core": "^0.46.2",
+    "@blocknote/mantine": "^0.46.2",
+    "@blocknote/react": "^0.46.2",
     "@lingui/react": "^5.9.0",
+    "@radix-ui/react-slot": "^1.2.4",
     "@tanstack/react-query": "^5.62.0",
     "@vanilla-extract/css": "^1.18.0",
+    "@vanilla-extract/dynamic": "^2.1.5",
+    "classnames": "^2.5.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router-dom": "^7.12.0"
@@ -31,6 +37,7 @@
     "prettier": "^3.8.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vite-plugin-svgr": "^4.5.0"
   }
 }

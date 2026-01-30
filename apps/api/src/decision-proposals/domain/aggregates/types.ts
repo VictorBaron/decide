@@ -6,7 +6,7 @@ import { UserJSON } from "src/users/domain";
 
 export interface DecisionProposalProps extends AggregateRootProps {
   title: string;
-  context: string | null;
+  context: unknown[] | null;
   dueDate: DueDate;
   criticality: Criticality;
   creatorId: string;
@@ -26,7 +26,7 @@ export interface DecisionProposalOptionJSON {
 
 export interface DecisionProposalJSON extends AggregateRootJSON {
   title: string;
-  context: string | null;
+  context: unknown[] | null;
   dueDate: Date;
   criticality: Criticality;
   creatorId: string;
@@ -38,7 +38,7 @@ export interface DecisionProposalJSON extends AggregateRootJSON {
 
 export interface CreateProposalProps {
   title: string;
-  context?: string | null;
+  context?: unknown[] | null;
   criticality: string;
   creatorId: string;
   deciderId: string;

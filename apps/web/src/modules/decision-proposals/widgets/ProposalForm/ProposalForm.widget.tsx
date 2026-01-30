@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import type { Block } from "@blocknote/core";
 import type {
   DecisionProposal,
   Criticality,
@@ -29,7 +30,7 @@ export function ProposalFormWidget({
   const [error, setError] = useState<string | null>(null);
 
   const [title, setTitle] = useState(proposal?.title || "");
-  const [context, setContext] = useState(proposal?.context || "");
+  const [context, setContext] = useState<Block[]>(proposal?.context || []);
   const [dueDate, setDueDate] = useState(
     proposal?.dueDate ? proposal.dueDate.split("T")[0] : ""
   );
@@ -53,7 +54,7 @@ export function ProposalFormWidget({
       if (isEditing) {
         await onSubmit({
           title,
-          context: context || undefined,
+          context: context.length ? context : undefined,
           dueDate,
           criticality,
           deciderId,
@@ -61,7 +62,7 @@ export function ProposalFormWidget({
       } else {
         await onSubmit({
           title,
-          context: context || undefined,
+          context: context.length ? context : undefined,
           dueDate,
           criticality,
           deciderId,

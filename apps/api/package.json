@@ -25,6 +25,7 @@
     "tsx": "^4.21.0"
   },
   "dependencies": {
+    "@blocknote/core": "^0.46.2",
     "@nestjs/common": "^11.1.11",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.11",

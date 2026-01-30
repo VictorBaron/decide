@@ -3,6 +3,7 @@ import type { DecisionProposal } from "../../types";
 import type { Decision } from "../../../decisions/types";
 import { CriticalityBadge } from "../../components";
 import { MakeDecisionModal } from "../../../decisions/components";
+import { RichTextViewer } from "../../../../components/RichTextViewer";
 import { ROUTES } from "../../../../pages/routes";
 import * as styles from "./ProposalDetail.css";
 
@@ -21,7 +22,10 @@ interface ProposalDetailViewProps {
   onRemoveOption: (optionId: string) => void;
   onShowDecisionModal: () => void;
   onCloseDecisionModal: () => void;
-  onMakeDecision: (data: { selectedOptionId: string; rationale?: string }) => void;
+  onMakeDecision: (data: {
+    selectedOptionId: string;
+    rationale?: string;
+  }) => void;
 }
 
 export function ProposalDetailView({
@@ -41,12 +45,12 @@ export function ProposalDetailView({
   onCloseDecisionModal,
   onMakeDecision,
 }: ProposalDetailViewProps) {
-  const isCreator = proposal.creatorId === currentUserId;
-  const isDecider = proposal.deciderId === currentUserId;
+  const isCreator = proposal.creator.id === currentUserId;
+  const isDecider = proposal.decider.id === currentUserId;
   const dueDate = new Date(proposal.dueDate);
   const isOverdue = dueDate < new Date();
   const hasDecision = decision !== null;
-  const canMakeDecision = isDecider && !hasDecision && proposal.options.length > 0;
+  const canMakeDecision = isDecider && !hasDecision;
 
   const selectedOption = hasDecision
     ? proposal.options.find((opt) => opt.id === decision.selectedOptionId)
@@ -62,14 +66,19 @@ export function ProposalDetailView({
         <div className={styles.headerLeft}>
           <div className={styles.titleRow}>
             <h1 className={styles.title}>{proposal.title}</h1>
-            {hasDecision && <span className={styles.decidedBadge}>Decided</span>}
+            {hasDecision && (
+              <span className={styles.decidedBadge}>Decided</span>
+            )}
           </div>
           <CriticalityBadge criticality={proposal.criticality} />
         </div>
 
         <div className={styles.actions}>
           {canMakeDecision && (
-            <button onClick={onShowDecisionModal} className={styles.buttonSuccess}>
+            <button
+              onClick={onShowDecisionModal}
+              className={styles.buttonSuccess}
+            >
               Make Decision
             </button>
           )}
@@ -145,30 +154,41 @@ export function ProposalDetailView({
         </div>
       </div>
 
-      {proposal.context && (
+      {proposal.context && proposal.context.length > 0 && (
         <div className={styles.contextSection}>
           <h3 className={styles.sectionTitle}>Context</h3>
-          <div className={styles.contextBox}>{proposal.context}</div>
+          <RichTextViewer content={proposal.context} />
         </div>
       )}
 
       <div className={styles.optionsSection}>
-        <h3 className={styles.sectionTitle}>Options ({proposal.options.length})</h3>
+        <h3 className={styles.sectionTitle}>
+          Options ({proposal.options.length})
+        </h3>
 
         {proposal.options.length === 0 ? (
           <div className={styles.emptyOptions}>No options added yet.</div>
         ) : (
           <div className={styles.optionsList}>
             {proposal.options.map((option) => {
-              const isSelected = hasDecision && option.id === decision.selectedOptionId;
+              const isSelected =
+                hasDecision && option.id === decision.selectedOptionId;
               return (
                 <div
                   key={option.id}
-                  className={isSelected ? styles.optionItemSelected : styles.optionItem}
+                  className={
+                    isSelected ? styles.optionItemSelected : styles.optionItem
+                  }
                 >
-                  <span className={isSelected ? styles.optionTextSelected : styles.optionText}>
+                  <span
+                    className={
+                      isSelected ? styles.optionTextSelected : styles.optionText
+                    }
+                  >
                     {option.text}
-                    {isSelected && <span className={styles.selectedLabel}>Selected</span>}
+                    {isSelected && (
+                      <span className={styles.selectedLabel}>Selected</span>
+                    )}
                   </span>
                   {isCreator && !hasDecision && (
                     <button

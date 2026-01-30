@@ -1,3 +1,5 @@
+import type { Block } from "@blocknote/core";
+
 export type Criticality = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 
 export interface User {
@@ -17,12 +19,10 @@ export interface DecisionOption {
 export interface DecisionProposal {
   id: string;
   title: string;
-  context?: string;
+  context?: Block[];
   dueDate: string;
   criticality: Criticality;
-  creatorId: string;
   creator: User;
-  deciderId: string;
   decider: User;
   options: DecisionOption[];
   createdAt: string;
@@ -31,7 +31,7 @@ export interface DecisionProposal {
 
 export interface CreateDecisionProposalInput {
   title: string;
-  context?: string;
+  context?: Block[];
   dueDate: string;
   criticality: Criticality;
   deciderId: string;
@@ -40,7 +40,7 @@ export interface CreateDecisionProposalInput {
 
 export interface UpdateDecisionProposalInput {
   title?: string;
-  context?: string;
+  context?: Block[];
   dueDate?: string;
   criticality?: Criticality;
   deciderId?: string;

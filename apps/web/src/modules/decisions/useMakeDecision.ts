@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import type { Decision, MakeDecisionInput } from "./types";
-import { queryKeys } from "../../lib/queryClient";
+import { queryKeys } from "../../common/queryClient";
 import { makeDecision as apiMakeDecision } from "./api";
 
 interface UseMakeDecisionReturn {

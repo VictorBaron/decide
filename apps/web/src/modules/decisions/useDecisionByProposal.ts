@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 import type { Decision } from "./types";
-import { queryKeys } from "../../lib/queryClient";
+import { queryKeys } from "../../common/queryClient";
 import { fetchDecisionByProposal } from "./api";
 
 interface UseDecisionByProposalReturn {
@@ -11,7 +11,9 @@ interface UseDecisionByProposalReturn {
   refresh: () => Promise<void>;
 }
 
-export function useDecisionByProposal(proposalId: string): UseDecisionByProposalReturn {
+export function useDecisionByProposal(
+  proposalId: string
+): UseDecisionByProposalReturn {
   const {
     data: decision,
     isLoading: loading,

@@ -27,8 +27,8 @@ export class DecisionProposalTypeOrm extends PersistenceEntity {
   @Column({ type: "varchar", length: 255 })
   title: string;
 
-  @Column({ type: "varchar", length: 10000, nullable: true })
-  context: string | null;
+  @Column({ type: "jsonb", nullable: true })
+  context: unknown[] | null;
 
   @Column({ type: "uuid" })
   creatorId: string;

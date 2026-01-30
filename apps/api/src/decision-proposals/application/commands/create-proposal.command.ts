@@ -6,7 +6,7 @@ export class CreateProposalCommand {
     readonly props: {
       creatorId: string;
       title: string;
-      context: string | null;
+      context: unknown[] | null;
       dueDate: string;
       criticality: string;
       deciderId: string;

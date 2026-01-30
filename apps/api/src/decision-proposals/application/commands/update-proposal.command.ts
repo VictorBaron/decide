@@ -11,7 +11,7 @@ export class UpdateProposalCommand {
       proposalId: string;
       userId: string;
       title: string;
-      context: string | null;
+      context: unknown[] | null;
       criticality: CriticalityLevel;
       deciderId: string;
       dueDate: Date;

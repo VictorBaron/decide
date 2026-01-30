@@ -1,5 +1,7 @@
 import type { FormEvent } from "react";
+import type { Block } from "@blocknote/core";
 import type { Criticality, User } from "../../types";
+import { RichTextEditor } from "../../../../components/RichTextEditor";
 import * as styles from "./ProposalForm.css";
 
 const CRITICALITY_OPTIONS: { value: Criticality; label: string }[] = [
@@ -11,7 +13,7 @@ const CRITICALITY_OPTIONS: { value: Criticality; label: string }[] = [
 
 interface ProposalFormViewProps {
   title: string;
-  context: string;
+  context: Block[];
   dueDate: string;
   criticality: Criticality;
   deciderId: string;
@@ -22,7 +24,7 @@ interface ProposalFormViewProps {
   error: string | null;
   isEditing: boolean;
   onTitleChange: (value: string) => void;
-  onContextChange: (value: string) => void;
+  onContextChange: (value: Block[]) => void;
   onDueDateChange: (value: string) => void;
   onCriticalityChange: (value: Criticality) => void;
   onDeciderIdChange: (value: string) => void;
@@ -73,13 +75,8 @@ export function ProposalFormView({
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>Context *</label>
-        <textarea
-          value={context}
-          onChange={(e) => onContextChange(e.target.value)}
-          className={styles.textarea}
-          placeholder="Provide background and context for this decision..."
-        />
+        <label className={styles.label}>Context</label>
+        <RichTextEditor initialContent={context} onChange={onContextChange} />
       </div>
 
       <div className={styles.grid2}>

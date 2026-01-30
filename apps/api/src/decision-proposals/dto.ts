@@ -26,9 +26,9 @@ export class CreateDecisionProposalDto {
   @IsNotEmpty()
   title!: string;
 
-  @IsString()
+  @IsArray()
   @IsOptional()
-  context?: string;
+  context?: unknown[];
 
   @IsDateString()
   dueDate!: string;
@@ -52,8 +52,9 @@ export class UpdateDecisionProposalContentDto {
   @IsNotEmpty()
   title?: string;
 
-  @IsString()
-  context: string;
+  @IsArray()
+  @IsOptional()
+  context?: unknown[];
 }
 
 export class UpdateDecisionProposalCriticalityDto {
@@ -92,7 +93,7 @@ export interface DecisionProposalOptionResponseDTO {
 export interface DecisionProposalResponseDTO {
   id: string;
   title: string;
-  context: string | null;
+  context: unknown[] | null;
   dueDate: Date;
   criticality: CriticalityLevel;
   creator: UserSummaryDTO;

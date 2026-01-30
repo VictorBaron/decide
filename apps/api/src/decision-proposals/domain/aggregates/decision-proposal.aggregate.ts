@@ -17,7 +17,7 @@ import { ForbiddenException } from "@nestjs/common/exceptions/forbidden.exceptio
 
 export class DecisionProposal extends AggregateRoot {
   private title: string;
-  private context: string | null;
+  private context: unknown[] | null;
   private dueDate: DueDate;
   private criticality: Criticality;
   private readonly creatorId: string;
@@ -53,7 +53,7 @@ export class DecisionProposal extends AggregateRoot {
     const proposal = new DecisionProposal({
       id: crypto.randomUUID(),
       title: props.title.trim(),
-      context: props.context?.trim() ?? null,
+      context: props.context ?? null,
       dueDate: DueDate.create(props.dueDate),
       criticality: Criticality.create(props.criticality),
       creatorId: props.creatorId,
@@ -128,7 +128,7 @@ export class DecisionProposal extends AggregateRoot {
     userId,
   }: {
     newTitle?: string;
-    newContext?: string | null;
+    newContext?: unknown[] | null;
     userId: string;
   }): void {
     const title = newTitle?.trim();
@@ -137,7 +137,7 @@ export class DecisionProposal extends AggregateRoot {
     }
 
     if (newContext !== undefined) {
-      this.context = newContext?.trim() ?? null;
+      this.context = newContext ?? null;
     }
 
     this.updateDecision({ userId });

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 import type { Decision } from "./types";
-import { queryKeys } from "../../lib/queryClient";
+import { queryKeys } from "../../common/queryClient";
 import { fetchDecisions } from "./api";
 
 interface UseDecisionsReturn {

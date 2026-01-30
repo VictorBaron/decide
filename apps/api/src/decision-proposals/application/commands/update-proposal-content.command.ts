@@ -7,7 +7,7 @@ export class UpdateProposalContentCommand {
       proposalId: string;
       userId: string;
       title?: string;
-      context?: string | null;
+      context?: unknown[] | null;
     }
   ) {}
 }

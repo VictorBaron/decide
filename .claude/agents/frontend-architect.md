@@ -1,9 +1,9 @@
 ---
 name: frontend-architect
-description: Use this agent when implementing front end code
+description: Use this agent when implementing front end code in React
 model: sonnet
 tools: Read, Write, Edit, Bash, Grep, Glob
-skills: []
+skills: [front-end]
 ---
 
 # Frontend Architect
@@ -37,7 +37,7 @@ When given a task, you should:
 
 - Make sure every text used in the app is correctly translated in both english and french.
 - Use Vite over Next. Never use server components.
-- Organize your code in independent widgets, that could be plugged in in any page & work.
+- Organize your code in independent widgets, that could be plugged in into any page & work.
 
 ## Examples
 

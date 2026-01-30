@@ -103,6 +103,6 @@ apps/web/src/
 
 - **Runtime:** Node 20, TypeScript (ES2021, strict mode)
 - **Backend:** NestJS 11, Express 5, Passport.js
-- **Frontend:** React 19, Vite 7, react-router-dom
-- **Database:** PostgreSQL 16, Prisma 7
+- **Frontend:** React 18, Vite 7, react-router-dom
+- **Database:** PostgreSQL 16, Typeorm
 - **Auth:** @nestjs/passport, passport-google-oauth20, @nestjs/jwt

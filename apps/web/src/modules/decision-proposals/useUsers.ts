@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import type { User } from "./types";
-import { queryKeys } from "../../lib/queryClient";
+import { queryKeys } from "../../common/queryClient";
 import { fetchUsers } from "./api";
 
 interface UseUsersReturn {

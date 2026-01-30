@@ -1,7 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useCallback } from "react";
-import type { DecisionProposal, CreateDecisionProposalInput, Criticality } from "./types";
-import { queryKeys } from "../../lib/queryClient";
+import type {
+  DecisionProposal,
+  CreateDecisionProposalInput,
+  Criticality,
+} from "./types";
+import { queryKeys } from "../../common/queryClient";
 import {
   fetchProposals,
   createProposal as apiCreate,
@@ -12,7 +16,9 @@ interface UseDecisionProposalsReturn {
   proposals: DecisionProposal[];
   loading: boolean;
   error: string | null;
-  createProposal: (data: CreateDecisionProposalInput) => Promise<DecisionProposal>;
+  createProposal: (
+    data: CreateDecisionProposalInput
+  ) => Promise<DecisionProposal>;
   deleteProposal: (id: string) => Promise<void>;
   refresh: () => Promise<void>;
   filterByCriticality: (criticality: Criticality | null) => DecisionProposal[];
@@ -73,6 +79,14 @@ export function useDecisionProposals(): UseDecisionProposalsReturn {
       refresh,
       filterByCriticality,
     }),
-    [proposals, loading, error, createMutation.mutateAsync, deleteMutation.mutateAsync, refresh, filterByCriticality]
+    [
+      proposals,
+      loading,
+      error,
+      createMutation.mutateAsync,
+      deleteMutation.mutateAsync,
+      refresh,
+      filterByCriticality,
+    ]
   );
 }
