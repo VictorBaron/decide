@@ -61,23 +61,23 @@ export const FontWeight = {
 export type FontWeightType = keyof typeof FontWeight;
 
 export type MarginProps = {
-  margin?: number;
-  marginX?: number;
-  marginY?: number;
-  marginTop?: number;
-  marginBottom?: number;
-  marginLeft?: number;
-  marginRight?: number;
+  margin?: string;
+  marginX?: string;
+  marginY?: string;
+  marginTop?: string;
+  marginBottom?: string;
+  marginLeft?: string;
+  marginRight?: string;
 };
 
 export type LayoutProps = {
-  padding?: number;
-  paddingX?: number;
-  paddingY?: number;
-  paddingTop?: number;
-  paddingBottom?: number;
-  paddingLeft?: number;
-  paddingRight?: number;
+  padding?: string;
+  paddingX?: string;
+  paddingY?: string;
+  paddingTop?: string;
+  paddingBottom?: string;
+  paddingLeft?: string;
+  paddingRight?: string;
   position?: React.CSSProperties["position"];
   top?: React.CSSProperties["top"];
   left?: React.CSSProperties["left"];

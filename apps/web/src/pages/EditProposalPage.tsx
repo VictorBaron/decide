@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { ProposalFormWidget, useDecisionProposal } from "../modules/decision-proposals";
+import { EditProposalFormWidget, useDecisionProposal } from "../modules/decision-proposals";
 import { ROUTES } from "./routes";
 import * as styles from "./EditProposalPage.css";
 
@@ -40,11 +40,7 @@ export function EditProposalPage() {
           <h1 className={styles.title}>Edit Proposal</h1>
           <p className={styles.subtitle}>Update the decision proposal details</p>
 
-          <ProposalFormWidget
-            proposal={proposal}
-            onSubmit={updateProposal}
-            isEditing
-          />
+          <EditProposalFormWidget proposal={proposal} onSubmit={updateProposal} />
         </div>
       </div>
     </div>

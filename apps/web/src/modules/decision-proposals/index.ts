@@ -2,7 +2,8 @@ export {
   DashboardWidget,
   ProposalListWidget,
   ProposalDetailWidget,
-  ProposalFormWidget,
+  CreateProposalFormWidget,
+  EditProposalFormWidget,
 } from "./widgets";
 export { CriticalityBadge, ProposalCard } from "./components";
 export { useDecisionProposals } from "./useDecisionProposals";

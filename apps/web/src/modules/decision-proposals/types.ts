@@ -19,9 +19,22 @@ export interface DecisionOption {
 export interface DecisionProposal {
   id: string;
   title: string;
-  context?: Block[];
-  dueDate: string;
+  context: Block[];
+  dueDate: Date;
   criticality: Criticality;
+  creator: User;
+  decider: User;
+  options: DecisionOption[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface DecisionProposalDTO {
+  id: string;
+  title: string;
+  context: unknown[];
+  dueDate: string;
+  criticality: string;
   creator: User;
   decider: User;
   options: DecisionOption[];
@@ -32,7 +45,7 @@ export interface DecisionProposal {
 export interface CreateDecisionProposalInput {
   title: string;
   context?: Block[];
-  dueDate: string;
+  dueDate: Date;
   criticality: Criticality;
   deciderId: string;
   options?: { text: string; order?: number }[];
@@ -41,7 +54,7 @@ export interface CreateDecisionProposalInput {
 export interface UpdateDecisionProposalInput {
   title?: string;
   context?: Block[];
-  dueDate?: string;
+  dueDate?: Date;
   criticality?: Criticality;
   deciderId?: string;
 }

@@ -14,10 +14,11 @@ import {
 } from "./types";
 import { Decision } from "src/decisions/domain";
 import { ForbiddenException } from "@nestjs/common/exceptions/forbidden.exception";
+import { Block } from "@blocknote/core";
 
 export class DecisionProposal extends AggregateRoot {
   private title: string;
-  private context: unknown[] | null;
+  private context: Block[];
   private dueDate: DueDate;
   private criticality: Criticality;
   private readonly creatorId: string;
@@ -53,7 +54,7 @@ export class DecisionProposal extends AggregateRoot {
     const proposal = new DecisionProposal({
       id: crypto.randomUUID(),
       title: props.title.trim(),
-      context: props.context ?? null,
+      context: props.context,
       dueDate: DueDate.create(props.dueDate),
       criticality: Criticality.create(props.criticality),
       creatorId: props.creatorId,
@@ -70,7 +71,7 @@ export class DecisionProposal extends AggregateRoot {
         proposalId: proposal.id,
         creatorId: props.creatorId,
         deciderId: props.deciderId,
-      })
+      }),
     );
 
     return proposal;
@@ -128,7 +129,7 @@ export class DecisionProposal extends AggregateRoot {
     userId,
   }: {
     newTitle?: string;
-    newContext?: unknown[] | null;
+    newContext?: Block[] | null;
     userId: string;
   }): void {
     const title = newTitle?.trim();
@@ -136,8 +137,8 @@ export class DecisionProposal extends AggregateRoot {
       this.title = title;
     }
 
-    if (newContext !== undefined) {
-      this.context = newContext ?? null;
+    if (!!newContext) {
+      this.context = newContext;
     }
 
     this.updateDecision({ userId });
@@ -161,7 +162,7 @@ export class DecisionProposal extends AggregateRoot {
       new OptionAddedEvent({
         proposalId: this.id,
         optionId: newOption.getText(),
-      })
+      }),
     );
   }
 
@@ -175,7 +176,7 @@ export class DecisionProposal extends AggregateRoot {
     this.options.removeOption(optionId);
     this.updateDecision({ userId });
     this.addDomainEvent(
-      new OptionRemovedEvent({ proposalId: this.id, optionId })
+      new OptionRemovedEvent({ proposalId: this.id, optionId }),
     );
   }
 
@@ -195,16 +196,27 @@ export class DecisionProposal extends AggregateRoot {
     return this.deciderId === userId;
   }
 
-  decide({ userId, optionId, rationale }: { userId: string; optionId: string; rationale: string | null }): Decision {
+  decide({
+    userId,
+    optionId,
+    rationale,
+  }: {
+    userId: string;
+    optionId: string;
+    rationale: string | null;
+  }): Decision {
     if (!this.canDecide(userId)) {
       throw new ForbiddenException(
-        "Only the designated decider can make a decision"
+        "Only the designated decider can make a decision",
       );
     }
     const optionExists = this.options.exists(optionId);
     if (!optionExists) {
       throw new Error("Selected option does not exist in this proposal");
     }
+
+    this.decided = true;
+
     return Decision.create({
       proposalId: this.id,
       selectedOptionId: optionId,

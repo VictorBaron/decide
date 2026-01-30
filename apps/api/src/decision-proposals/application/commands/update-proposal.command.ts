@@ -4,6 +4,7 @@ import {
   DecisionProposal,
   DecisionProposalRepository,
 } from "../../domain";
+import { Block } from "@blocknote/core";
 
 export class UpdateProposalCommand {
   constructor(
@@ -11,11 +12,11 @@ export class UpdateProposalCommand {
       proposalId: string;
       userId: string;
       title: string;
-      context: unknown[] | null;
+      context: Block[];
       criticality: CriticalityLevel;
       deciderId: string;
       dueDate: Date;
-    }
+    },
   ) {}
 }
 

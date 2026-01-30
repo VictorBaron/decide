@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { DecisionsListWidget } from "../modules/decisions";
-import { LogoutButtonWidget, useAuth } from "../modules/auth";
+import { LogoutButtonWidget, useAuth } from "../modules/identity";
 import { ROUTES } from "./routes";
 import * as styles from "./DecisionsBacklogPage.css";
 

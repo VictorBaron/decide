@@ -27,8 +27,8 @@ export class DecisionProposalTypeOrm extends PersistenceEntity {
   @Column({ type: "varchar", length: 255 })
   title: string;
 
-  @Column({ type: "jsonb", nullable: true })
-  context: unknown[] | null;
+  @Column({ type: "jsonb", nullable: false, default: () => "'[]'" })
+  context: unknown[];
 
   @Column({ type: "uuid" })
   creatorId: string;
@@ -70,7 +70,7 @@ export class DecisionProposalTypeOrm extends PersistenceEntity {
 
   static build(
     props: OwnProperties<DecisionProposalTypeOrm> &
-      Pick<DecisionProposalTypeOrm, "options">
+      Pick<DecisionProposalTypeOrm, "options">,
   ): DecisionProposalTypeOrm {
     return Object.assign<
       DecisionProposalTypeOrm,

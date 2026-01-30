@@ -5,30 +5,39 @@ import type {
   UpdateDecisionProposalInput,
   AddOptionInput,
   User,
+  DecisionProposalDTO,
 } from "./types";
+import { DecisionProposalMapper } from "./decisionProposal.mapper";
+import { handleResponse } from "../../common/api";
 
 const BASE_URL = "/api/v1/decision-proposals";
 
-async function handleResponse<T>(res: Response): Promise<T> {
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: "Request failed" }));
-    throw new Error(error.message || "Request failed");
+async function convertDTOtoProposal(
+  dto: DecisionProposalDTO | DecisionProposalDTO[],
+): Promise<DecisionProposal | DecisionProposal[]> {
+  if (Array.isArray(dto)) {
+    return dto.map(DecisionProposalMapper.toDecisionProposal);
   }
-  return res.json();
+  return DecisionProposalMapper.toDecisionProposal(dto);
 }
 
 export async function fetchProposals(): Promise<DecisionProposal[]> {
-  const res = await fetch(BASE_URL, { credentials: "include" });
-  return handleResponse(res);
+  const response = await fetch(BASE_URL, { credentials: "include" });
+  const result = await handleResponse<DecisionProposalDTO[]>(response);
+
+  return convertDTOtoProposal(result) as Promise<DecisionProposal[]>;
 }
 
 export async function fetchProposal(id: string): Promise<DecisionProposal> {
-  const res = await fetch(`${BASE_URL}/${id}`, { credentials: "include" });
-  return handleResponse(res);
+  const response = await fetch(`${BASE_URL}/${id}`, { credentials: "include" });
+
+  const result = await handleResponse<DecisionProposalDTO>(response);
+
+  return convertDTOtoProposal(result) as Promise<DecisionProposal>;
 }
 
 export async function createProposal(
-  data: CreateDecisionProposalInput
+  data: CreateDecisionProposalInput,
 ): Promise<DecisionProposal> {
   const res = await fetch(BASE_URL, {
     method: "POST",
@@ -36,12 +45,14 @@ export async function createProposal(
     credentials: "include",
     body: JSON.stringify(data),
   });
-  return handleResponse(res);
+  return convertDTOtoProposal(
+    await handleResponse<DecisionProposalDTO>(res),
+  ) as Promise<DecisionProposal>;
 }
 
 export async function updateProposal(
   id: string,
-  data: UpdateDecisionProposalInput
+  data: UpdateDecisionProposalInput,
 ): Promise<DecisionProposal> {
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "PUT",
@@ -49,7 +60,9 @@ export async function updateProposal(
     credentials: "include",
     body: JSON.stringify(data),
   });
-  return handleResponse(res);
+  return convertDTOtoProposal(
+    await handleResponse<DecisionProposalDTO>(res),
+  ) as Promise<DecisionProposal>;
 }
 
 export async function deleteProposal(id: string): Promise<void> {
@@ -65,7 +78,7 @@ export async function deleteProposal(id: string): Promise<void> {
 
 export async function addOption(
   proposalId: string,
-  data: AddOptionInput
+  data: AddOptionInput,
 ): Promise<DecisionOption> {
   const res = await fetch(`${BASE_URL}/${proposalId}/options`, {
     method: "POST",
@@ -78,7 +91,7 @@ export async function addOption(
 
 export async function removeOption(
   proposalId: string,
-  optionId: string
+  optionId: string,
 ): Promise<void> {
   const res = await fetch(`${BASE_URL}/${proposalId}/options/${optionId}`, {
     method: "DELETE",

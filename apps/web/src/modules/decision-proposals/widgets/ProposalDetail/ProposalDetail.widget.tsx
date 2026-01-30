@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDecisionProposal } from "../../useDecisionProposal";
 import { useDecisionByProposal } from "../../../decisions/useDecisionByProposal";
 import { useMakeDecision } from "../../../decisions/useMakeDecision";
-import { useAuth } from "../../../auth/useAuth";
+import { useAuth } from "../../../identity/useAuth";
 import { ROUTES } from "../../../../pages/routes";
 import { ProposalDetailView } from "./ProposalDetail.view";
 import * as styles from "./ProposalDetail.css";
@@ -12,7 +12,9 @@ interface ProposalDetailWidgetProps {
   proposalId: string;
 }
 
-export function ProposalDetailWidget({ proposalId }: ProposalDetailWidgetProps) {
+export function ProposalDetailWidget({
+  proposalId,
+}: ProposalDetailWidgetProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { proposal, loading, error, deleteProposal, addOption, removeOption } =
@@ -31,11 +33,17 @@ export function ProposalDetailWidget({ proposalId }: ProposalDetailWidgetProps) 
   }
 
   if (error || !proposal) {
-    return <div className={styles.errorState}>{error || "Proposal not found"}</div>;
+    return (
+      <div className={styles.errorState}>{error || "Proposal not found"}</div>
+    );
   }
 
   if (!user) {
-    return <div className={styles.errorState}>Please log in to view this proposal</div>;
+    return (
+      <div className={styles.errorState}>
+        Please log in to view this proposal
+      </div>
+    );
   }
 
   const handleDelete = async () => {

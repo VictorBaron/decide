@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ProposalListWidget } from "../modules/decision-proposals";
-import { LogoutButtonWidget, useAuth } from "../modules/auth";
+import { LogoutButtonWidget, useAuth } from "../modules/identity";
 import { ROUTES } from "./routes";
 import * as styles from "./ProposalsPage.css";
 

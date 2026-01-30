@@ -1,8 +1,19 @@
-import { notNullish } from 'helpers';
-import { MarginProps } from 'mimir/types';
+import type { MarginProps } from "../../styles/types";
+import { notNullish } from "./notNullish";
 
-export const extractMarginProps = <Props extends {} = {}>(props: Props & MarginProps) => {
-  const { margin, marginX, marginY, marginTop, marginBottom, marginLeft, marginRight, ...rest } = props;
+export const extractMarginProps = <Props extends object = object>(
+  props: Props & MarginProps,
+) => {
+  const {
+    margin,
+    marginX,
+    marginY,
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    ...rest
+  } = props;
 
   return {
     marginProps: {

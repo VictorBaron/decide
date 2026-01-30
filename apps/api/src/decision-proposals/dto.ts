@@ -47,6 +47,32 @@ export class CreateDecisionProposalDto {
   options?: CreateOptionDto[];
 }
 
+export class UpdateDecisionProposalDto {
+  @IsString()
+  @IsNotEmpty()
+  title!: string;
+
+  @IsArray()
+  @IsOptional()
+  context!: Block[];
+
+  @IsDateString()
+  dueDate!: string;
+
+  @IsEnum(CriticalityLevel)
+  criticality!: CriticalityLevel;
+
+  @IsString()
+  @IsNotEmpty()
+  deciderId!: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateOptionDto)
+  @IsOptional()
+  options?: CreateOptionDto[];
+}
+
 export class UpdateDecisionProposalContentDto {
   @IsString()
   @IsNotEmpty()
@@ -81,6 +107,7 @@ export class AddOptionDto {
 
 import { UserSummaryDTO } from "src/common/dto";
 import { Criticality } from "./domain";
+import { Block } from "@blocknote/core";
 
 export interface DecisionProposalOptionResponseDTO {
   id: string;

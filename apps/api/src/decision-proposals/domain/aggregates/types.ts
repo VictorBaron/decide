@@ -1,12 +1,11 @@
 import { AggregateRootProps, AggregateRootJSON } from "src/common/domain";
-import { Criticality, CriticalityLevel, DueDate } from "../value-objects";
+import { Criticality, DueDate } from "../value-objects";
 import { DecisionProposalOption } from "../entities/decision-proposal-option.entity";
-import { User } from "src/users/domain/aggregates/user.aggregate";
-import { UserJSON } from "src/users/domain";
+import { Block } from "@blocknote/core";
 
 export interface DecisionProposalProps extends AggregateRootProps {
   title: string;
-  context: unknown[] | null;
+  context: Block[];
   dueDate: DueDate;
   criticality: Criticality;
   creatorId: string;
@@ -26,7 +25,7 @@ export interface DecisionProposalOptionJSON {
 
 export interface DecisionProposalJSON extends AggregateRootJSON {
   title: string;
-  context: unknown[] | null;
+  context: Block[];
   dueDate: Date;
   criticality: Criticality;
   creatorId: string;
@@ -38,7 +37,7 @@ export interface DecisionProposalJSON extends AggregateRootJSON {
 
 export interface CreateProposalProps {
   title: string;
-  context?: unknown[] | null;
+  context: Block[];
   criticality: string;
   creatorId: string;
   deciderId: string;

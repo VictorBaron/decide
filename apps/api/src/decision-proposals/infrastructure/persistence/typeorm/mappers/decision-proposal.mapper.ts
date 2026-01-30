@@ -4,11 +4,11 @@ import {
   Criticality,
   DueDate,
 } from "src/decision-proposals/domain";
-import { DecisionProposalJSON } from "src/decision-proposals/domain/aggregates/types";
 import { DecisionProposalResponseDTO } from "src/decision-proposals/dto";
 import { DecisionProposalTypeOrm } from "../models/decision-proposal.typeorm";
 import { DecisionProposalOptionTypeOrm } from "../models/decision-proposal-option.typeorm";
 import { UserSummaryDTO } from "src/common/dto";
+import { isBlock } from "src/decision-proposals/domain/entities/editor";
 
 export class DecisionProposalMapper {
   static toDomain(raw: DecisionProposalTypeOrm): DecisionProposal {
@@ -21,13 +21,13 @@ export class DecisionProposalMapper {
           updatedAt: opt.updatedAt,
           deletedAt: null,
           text: opt.text,
-        })
+        }),
       );
 
     return DecisionProposal.reconstitute({
       id: raw.id,
       title: raw.title,
-      context: raw.context,
+      context: raw.context.filter(isBlock),
       dueDate: new DueDate(new Date(raw.dueDate)),
       criticality: Criticality.create(raw.criticality),
       creatorId: raw.creatorId,
@@ -62,14 +62,14 @@ export class DecisionProposalMapper {
           proposalId: jsonProposal.id,
           createdAt: option.createdAt,
           updatedAt: option.updatedAt,
-        })
+        }),
       ),
     });
   }
 
   static toResponse(
     proposal: DecisionProposal,
-    users: Map<string, UserSummaryDTO>
+    users: Map<string, UserSummaryDTO>,
   ): DecisionProposalResponseDTO {
     const json = proposal.toJSON();
     const creator = users.get(json.creatorId);

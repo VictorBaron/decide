@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
-import { ProposalFormWidget } from "../modules/decision-proposals";
-import { createProposal } from "../modules/decision-proposals/api";
-import type { CreateDecisionProposalInput } from "../modules/decision-proposals/types";
+import { CreateProposalFormWidget } from "../modules/decision-proposals";
 import { ROUTES } from "./routes";
 import * as styles from "./NewProposalPage.css";
 
@@ -19,9 +17,7 @@ export function NewProposalPage() {
             Define a decision that needs to be made by the team
           </p>
 
-          <ProposalFormWidget
-            onSubmit={(data) => createProposal(data as CreateDecisionProposalInput)}
-          />
+          <CreateProposalFormWidget />
         </div>
       </div>
     </div>

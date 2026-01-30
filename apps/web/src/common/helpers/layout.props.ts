@@ -1,6 +1,8 @@
-import { LayoutProps } from 'mimir/types';
+import type { LayoutProps } from "../../styles/types";
 
-export const extractLayoutProps = <Props extends {} = {}>(props: Props & LayoutProps) => {
+export const extractLayoutProps = <Props extends object = object>(
+  props: Props & LayoutProps,
+) => {
   const {
     padding,
     paddingX,
@@ -27,24 +29,41 @@ export const extractLayoutProps = <Props extends {} = {}>(props: Props & LayoutP
 
   return {
     layoutProps: {
-      paddingLeft: paddingX || paddingLeft || padding ? `${paddingX || paddingLeft || padding}px` : undefined,
-      paddingRight: paddingX || paddingRight || padding ? `${paddingX || paddingRight || padding}px` : undefined,
-      paddingTop: paddingY || paddingTop || padding ? `${paddingY || paddingTop || padding}px` : undefined,
-      paddingBottom: paddingY || paddingBottom || padding ? `${paddingY || paddingBottom || padding}px` : undefined,
+      paddingLeft:
+        paddingX || paddingLeft || padding
+          ? `${paddingX || paddingLeft || padding}px`
+          : undefined,
+      paddingRight:
+        paddingX || paddingRight || padding
+          ? `${paddingX || paddingRight || padding}px`
+          : undefined,
+      paddingTop:
+        paddingY || paddingTop || padding
+          ? `${paddingY || paddingTop || padding}px`
+          : undefined,
+      paddingBottom:
+        paddingY || paddingBottom || padding
+          ? `${paddingY || paddingBottom || padding}px`
+          : undefined,
       position,
-      top,
-      left,
-      right,
-      bottom,
-      width,
-      maxWidth,
-      minWidth,
-      height,
-      maxHeight,
-      minHeight,
-      flexShrink: shrink,
-      flexGrow: grow,
+      top: numberToString(top),
+      left: numberToString(left),
+      right: numberToString(right),
+      bottom: numberToString(bottom),
+      width: numberToString(width),
+      maxWidth: numberToString(maxWidth),
+      minWidth: numberToString(minWidth),
+      height: numberToString(height),
+      maxHeight: numberToString(maxHeight),
+      minHeight: numberToString(minHeight),
+      flexShrink: numberToString(shrink),
+      flexGrow: numberToString(grow),
     },
     rest,
   };
+};
+
+const numberToString = (value: number | string | undefined) => {
+  if (value === undefined) return undefined;
+  return typeof value === "number" ? `${value}px` : value;
 };

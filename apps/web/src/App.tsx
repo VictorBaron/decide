@@ -10,63 +10,66 @@ import { EditProposalPage } from "./pages/EditProposalPage";
 import { DecisionsBacklogPage } from "./pages/DecisionsBacklogPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ROUTES } from "./pages/routes";
+import { ErrorBoundary } from "./common/error";
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-          <Route
-            path={ROUTES.HOME}
-            element={
-              <ProtectedRoute>
-                <HomePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={ROUTES.PROPOSALS}
-            element={
-              <ProtectedRoute>
-                <ProposalsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={ROUTES.PROPOSAL_NEW}
-            element={
-              <ProtectedRoute>
-                <NewProposalPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={ROUTES.PROPOSAL_DETAIL}
-            element={
-              <ProtectedRoute>
-                <ProposalDetailPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={ROUTES.PROPOSAL_EDIT}
-            element={
-              <ProtectedRoute>
-                <EditProposalPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={ROUTES.DECISIONS}
-            element={
-              <ProtectedRoute>
-                <DecisionsBacklogPage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <Routes>
+            <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+            <Route
+              path={ROUTES.HOME}
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.PROPOSALS}
+              element={
+                <ProtectedRoute>
+                  <ProposalsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.PROPOSAL_NEW}
+              element={
+                <ProtectedRoute>
+                  <NewProposalPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.PROPOSAL_DETAIL}
+              element={
+                <ProtectedRoute>
+                  <ProposalDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.PROPOSAL_EDIT}
+              element={
+                <ProtectedRoute>
+                  <EditProposalPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.DECISIONS}
+              element={
+                <ProtectedRoute>
+                  <DecisionsBacklogPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </ErrorBoundary>
     </QueryClientProvider>
   );
 }

@@ -29,13 +29,12 @@ export const input = style({
   },
 });
 
-export const textarea = style([
-  input,
-  {
-    minHeight: 100,
-    resize: "vertical",
-  },
-]);
+export const error = style({
+  display: "block",
+  marginTop: vars.space.xs,
+  fontSize: vars.fontSize.sm,
+  color: vars.color.error,
+});
 
 export const grid2 = style({
   display: "grid",
@@ -95,13 +94,4 @@ export const submitButton = style({
     opacity: 0.7,
     cursor: "not-allowed",
   },
-});
-
-export const errorAlert = style({
-  padding: vars.space.md,
-  backgroundColor: vars.color.errorBg,
-  color: vars.color.error,
-  borderRadius: vars.radius.md,
-  fontSize: vars.fontSize.base,
-  marginBottom: vars.space.lg,
 });

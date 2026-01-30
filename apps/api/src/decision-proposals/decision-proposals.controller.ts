@@ -41,12 +41,14 @@ import {
   UpdateDecisionProposalDeciderDto,
   AddOptionDto,
   DecisionProposalResponseDTO,
+  UpdateDecisionProposalDto,
 } from "./dto";
 import { DecisionProposalMapper } from "./infrastructure";
 import { DecisionProposal } from "./domain";
 import { CookieAuthGuard } from "../auth/cookie-auth.guard";
 import { UserRepository } from "../users/domain";
 import { UserSummaryDTO } from "src/common/dto";
+import { UpdateProposalCommand } from "./application/commands/update-proposal.command";
 
 interface AuthRequest extends Request {
   user: { sub: string; email: string; name?: string };
@@ -66,11 +68,11 @@ export class DecisionProposalsController {
     private readonly removeOptionHandler: RemoveOptionHandler,
     private readonly getProposalHandler: GetProposalHandler,
     private readonly getUserProposalsHandler: GetUserProposalsHandler,
-    private readonly userRepository: UserRepository
+    private readonly userRepository: UserRepository,
   ) {}
 
   private async getUsersMap(
-    proposals: DecisionProposal[]
+    proposals: DecisionProposal[],
   ): Promise<Map<string, UserSummaryDTO>> {
     const userIds = new Set<string>();
     for (const proposal of proposals) {
@@ -88,14 +90,14 @@ export class DecisionProposalsController {
   }
 
   private async mapToResponse(
-    proposal: DecisionProposal
+    proposal: DecisionProposal,
   ): Promise<DecisionProposalResponseDTO> {
     const usersMap = await this.getUsersMap([proposal]);
     return DecisionProposalMapper.toResponse(proposal, usersMap);
   }
 
   private async mapManyToResponse(
-    proposals: DecisionProposal[]
+    proposals: DecisionProposal[],
   ): Promise<DecisionProposalResponseDTO[]> {
     const usersMap = await this.getUsersMap(proposals);
     return proposals.map((p) => DecisionProposalMapper.toResponse(p, usersMap));
@@ -104,7 +106,7 @@ export class DecisionProposalsController {
   @Post()
   async create(
     @Req() req: AuthRequest,
-    @Body() dto: CreateDecisionProposalDto
+    @Body() dto: CreateDecisionProposalDto,
   ) {
     const options = dto.options?.map((option) => option.text) || [];
     const command = new CreateProposalCommand({
@@ -136,10 +138,30 @@ export class DecisionProposalsController {
   }
 
   @Put(":id")
+  async update(
+    @Req() req: AuthRequest,
+    @Param("id") id: string,
+    @Body() dto: UpdateDecisionProposalDto,
+  ) {
+    const command = new UpdateProposalCommand({
+      proposalId: id,
+      userId: req.user.sub,
+      title: dto.title,
+      context: dto.context,
+      criticality: dto.criticality,
+      deciderId: dto.deciderId,
+      dueDate: new Date(dto.dueDate),
+    });
+
+    const proposal = await this.updateProposalContentHandler.execute(command);
+    return this.mapToResponse(proposal);
+  }
+
+  @Put(":id/content")
   async updateContent(
     @Req() req: AuthRequest,
     @Param("id") id: string,
-    @Body() dto: UpdateDecisionProposalContentDto
+    @Body() dto: UpdateDecisionProposalContentDto,
   ) {
     const command = new UpdateProposalContentCommand({
       proposalId: id,
@@ -152,11 +174,11 @@ export class DecisionProposalsController {
     return this.mapToResponse(proposal);
   }
 
-  @Put(":id")
+  @Put(":id/criticality")
   async updateCriticality(
     @Req() req: AuthRequest,
     @Param("id") id: string,
-    @Body() dto: UpdateDecisionProposalCriticalityDto
+    @Body() dto: UpdateDecisionProposalCriticalityDto,
   ) {
     const command = new UpdateProposalCriticalityCommand({
       proposalId: id,
@@ -169,11 +191,11 @@ export class DecisionProposalsController {
     return this.mapToResponse(proposal);
   }
 
-  @Put(":id")
+  @Put(":id/due-date")
   async updateDueDate(
     @Req() req: AuthRequest,
     @Param("id") id: string,
-    @Body() dto: UpdateDecisionProposalDueDateDto
+    @Body() dto: UpdateDecisionProposalDueDateDto,
   ) {
     const command = new UpdateProposalDueDateCommand({
       proposalId: id,
@@ -185,11 +207,11 @@ export class DecisionProposalsController {
     return this.mapToResponse(proposal);
   }
 
-  @Put(":id")
+  @Put(":id/decider")
   async updateDecider(
     @Req() req: AuthRequest,
     @Param("id") id: string,
-    @Body() dto: UpdateDecisionProposalDeciderDto
+    @Body() dto: UpdateDecisionProposalDeciderDto,
   ) {
     const command = new UpdateProposalDeciderCommand({
       proposalId: id,
@@ -212,7 +234,7 @@ export class DecisionProposalsController {
   async addOption(
     @Req() req: AuthRequest,
     @Param("id") id: string,
-    @Body() dto: AddOptionDto
+    @Body() dto: AddOptionDto,
   ) {
     const command = new AddOptionCommand({
       proposalId: id,
@@ -227,7 +249,7 @@ export class DecisionProposalsController {
   async removeOption(
     @Req() req: AuthRequest,
     @Param("id") id: string,
-    @Param("optionId") optionId: string
+    @Param("optionId") optionId: string,
   ) {
     const command = new RemoveOptionCommand({
       proposalId: id,

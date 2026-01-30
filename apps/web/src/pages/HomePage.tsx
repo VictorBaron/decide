@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { LogoutButtonWidget, useAuth } from "../modules/auth";
+import { LogoutButtonWidget, useAuth } from "../modules/identity";
 import { ROUTES } from "./routes";
 import * as styles from "./HomePage.css";
 
