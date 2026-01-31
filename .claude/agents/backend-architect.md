@@ -5,6 +5,7 @@ model: opus
 tools: Read, Write, Edit, Bash, Grep
 skills:
   - ddd
+  - api-design
 ---
 
 # Backend Architect
