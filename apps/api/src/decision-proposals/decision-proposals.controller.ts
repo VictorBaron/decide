@@ -112,7 +112,7 @@ export class DecisionProposalsController {
     const command = new CreateProposalCommand({
       creatorId: req.user.sub,
       title: dto.title,
-      context: dto.context ?? null,
+      context: dto.context,
       dueDate: dto.dueDate,
       criticality: dto.criticality,
       deciderId: dto.deciderId,

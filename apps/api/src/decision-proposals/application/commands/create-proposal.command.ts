@@ -1,17 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { DecisionProposal, DecisionProposalRepository } from "../../domain";
+import { Block } from "@blocknote/core";
 
 export class CreateProposalCommand {
   constructor(
     readonly props: {
       creatorId: string;
       title: string;
-      context: unknown[] | null;
+      context: Block[];
       dueDate: string;
       criticality: string;
       deciderId: string;
       options: string[];
-    }
+    },
   ) {}
 }
 

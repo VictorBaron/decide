@@ -27,8 +27,7 @@ export class CreateDecisionProposalDto {
   title!: string;
 
   @IsArray()
-  @IsOptional()
-  context?: unknown[];
+  context!: Block[];
 
   @IsDateString()
   dueDate!: string;
