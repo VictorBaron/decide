@@ -5,10 +5,10 @@ import { ConfigService } from "@nestjs/config";
 
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
-import { UsersModule } from "../users/users.module";
-import { CookieAuthGuard } from "./cookie-auth.guard";
+ import { CookieAuthGuard } from "./cookie-auth.guard";
 import { GoogleStrategy } from "./google.strategy";
 import { GoogleAuthGuard } from "./google-auth.guard";
+import { UsersModule } from "src/core/users/users.module";
 
 @Module({
   imports: [

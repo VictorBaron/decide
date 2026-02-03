@@ -6,7 +6,9 @@
     "start:prod": "node dist/main.js",
     "migration:generate": "tsx node_modules/typeorm/cli.js migration:generate -d src/data-source.ts",
     "migration:run": "tsx node_modules/typeorm/cli.js migration:run -d src/data-source.ts",
-    "migration:revert": "tsx node_modules/typeorm/cli.js migration:revert -d src/data-source.ts"
+    "migration:revert": "tsx node_modules/typeorm/cli.js migration:revert -d src/data-source.ts",
+    "test": "jest",
+    "test:coverage": "jest --collectCoverage"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
@@ -20,6 +22,7 @@
     "jest": "^30.2.0",
     "nodemon": "^3.1.11",
     "prettier": "^3.8.0",
+    "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.21.0"
@@ -34,6 +37,7 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.11",
     "@nestjs/serve-static": "^5.0.4",
+    "@nestjs/testing": "^11.1.12",
     "@nestjs/throttler": "^6.5.0",
     "@nestjs/typeorm": "^11.0.0",
     "@types/express": "^5.0.6",

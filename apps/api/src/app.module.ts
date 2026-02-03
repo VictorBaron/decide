@@ -6,11 +6,12 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { CqrsModule } from "@nestjs/cqrs";
 import { join } from "path";
 
-import { UsersModule } from "./users/users.module";
+import { UsersModule } from "./core/users/users.module";
 import { AuthModule } from "./auth/auth.module";
 import { HealthModule } from "./health/health.module";
-import { DecisionProposalsModule } from "./decision-proposals/decision-proposals.module";
-import { DecisionsModule } from "./decisions/decisions.module";
+import { DecisionProposalsModule } from "./core/decision-proposals/decision-proposals.module";
+import { DecisionsModule } from "./core/decisions/decisions.module";
+import { AccountsModule } from "./core/accounts/accounts.module";
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { DecisionsModule } from "./decisions/decisions.module";
     HealthModule,
     DecisionProposalsModule,
     DecisionsModule,
+    AccountsModule,
   ],
 })
 export class AppModule {}

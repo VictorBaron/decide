@@ -4,32 +4,32 @@ import * as argon2 from "argon2";
 import {
   CreateUserHandler,
   CreateUserCommand,
-} from "../users/application/commands";
+} from "../core/users/application/commands";
 import {
   GetUserByEmailHandler,
   GetUserByEmailQuery,
-} from "../users/application/queries";
-import { User, UserJSON } from "../users/domain";
+} from "../core/users/application/queries";
+import { User, UserJSON } from "../core/users/domain";
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly createUserHandler: CreateUserHandler,
     private readonly getUserByEmailHandler: GetUserByEmailHandler,
-    private readonly jwt: JwtService
+    private readonly jwt: JwtService,
   ) {}
 
   async register(email: string, password: string) {
     const hash = await argon2.hash(password);
     const user = await this.createUserHandler.execute(
-      new CreateUserCommand({ email, password: hash })
+      new CreateUserCommand({ email, password: hash }),
     );
     return { id: user.getId(), email: user.getEmail().getValue() };
   }
 
   async login(email: string, password: string) {
     const user = await this.getUserByEmailHandler.execute(
-      new GetUserByEmailQuery(email)
+      new GetUserByEmailQuery(email),
     );
     if (!user || !user.getPassword()) {
       throw new UnauthorizedException("Invalid credentials");

@@ -14,13 +14,13 @@ import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto";
 import { CookieAuthGuard } from "./cookie-auth.guard";
 import { GoogleAuthGuard } from "./google-auth.guard";
-import { UserJSON } from "../users/domain";
+import { UserJSON } from "src/core/users/domain";
 
 @Controller("v1/auth")
 export class AuthController {
   constructor(
     private readonly auth: AuthService,
-    private readonly config: ConfigService
+    private readonly config: ConfigService,
   ) {}
 
   private cookieOptions() {
@@ -39,7 +39,7 @@ export class AuthController {
   @Post("login")
   async login(
     @Body() dto: LoginDto,
-    @Res({ passthrough: true }) res: Response
+    @Res({ passthrough: true }) res: Response,
   ) {
     const { token, user } = await this.auth.login(dto.email, dto.password);
     res.cookie("session", token, this.cookieOptions());
@@ -55,7 +55,9 @@ export class AuthController {
   @Get("me")
   @UseGuards(CookieAuthGuard)
   me(@Req() req: Request) {
-    const payload = (req as Request & { user: { sub: string; email: string; name?: string } }).user;
+    const payload = (
+      req as Request & { user: { sub: string; email: string; name?: string } }
+    ).user;
     return { id: payload.sub, email: payload.email, name: payload.name };
   }
 

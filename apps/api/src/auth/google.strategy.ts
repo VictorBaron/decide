@@ -7,13 +7,13 @@ import {
   CreateOAuthUserCommand,
   LinkGoogleAccountHandler,
   LinkGoogleAccountCommand,
-} from "../users/application/commands";
+} from "../core/users/application/commands";
 import {
   GetUserByGoogleIdHandler,
   GetUserByGoogleIdQuery,
   GetUserByEmailHandler,
   GetUserByEmailQuery,
-} from "../users/application/queries";
+} from "../core/users/application/queries";
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
@@ -22,7 +22,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     private readonly getUserByGoogleIdHandler: GetUserByGoogleIdHandler,
     private readonly getUserByEmailHandler: GetUserByEmailHandler,
     private readonly createOAuthUserHandler: CreateOAuthUserHandler,
-    private readonly linkGoogleAccountHandler: LinkGoogleAccountHandler
+    private readonly linkGoogleAccountHandler: LinkGoogleAccountHandler,
   ) {
     super({
       clientID: config.get<string>("GOOGLE_CLIENT_ID")!,
@@ -36,7 +36,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     accessToken: string,
     refreshToken: string,
     profile: Profile,
-    done: VerifyCallback
+    done: VerifyCallback,
   ): Promise<void> {
     const { id: googleId, emails, displayName } = profile;
     const email = emails?.[0]?.value;
@@ -46,12 +46,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     }
 
     let user = await this.getUserByGoogleIdHandler.execute(
-      new GetUserByGoogleIdQuery(googleId)
+      new GetUserByGoogleIdQuery(googleId),
     );
 
     if (!user) {
       user = await this.getUserByEmailHandler.execute(
-        new GetUserByEmailQuery(email)
+        new GetUserByEmailQuery(email),
       );
 
       if (user) {
@@ -60,7 +60,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
             userId: user.getId(),
             googleId,
             name: displayName,
-          })
+          }),
         );
       } else {
         user = await this.createOAuthUserHandler.execute(
@@ -68,7 +68,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
             email,
             googleId,
             name: displayName,
-          })
+          }),
         );
       }
     }
